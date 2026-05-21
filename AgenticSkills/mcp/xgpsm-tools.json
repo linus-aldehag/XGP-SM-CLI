@@ -1,0 +1,81 @@
+{
+  "tools": [
+    {
+      "name": "xgpsm_scan",
+      "description": "Scans the local Windows machine for all installed Xbox Game Pass (UWP/WGS) packages that have save data present. Returns a structured list of discovered games including their package name, XUID profiles, last played timestamps, save footprint size, and data chunk count. Always call this first to resolve package names and XUIDs before calling any other xgpsm tool.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "xgpsm_extract",
+      "description": "Extracts raw save file chunks from a specific Xbox Game Pass game profile into a named output folder. Use after xgpsm_scan to resolve the correct package name and XUID. The output folder will be created in the current working directory. Returns the number of files extracted and the output path.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "package": {
+            "type": "string",
+            "description": "The full UWP package name of the game, e.g. 'BethesdaSoftworks.Starfield_8wekyb3d8bbwe'. Obtain this from xgpsm_scan output."
+          },
+          "xuid": {
+            "type": "string",
+            "description": "The Xbox User ID (XUID) of the profile to extract from. Obtain this from xgpsm_scan output."
+          }
+        },
+        "required": ["package", "xuid"]
+      }
+    },
+    {
+      "name": "xgpsm_backup",
+      "description": "Creates a timestamped backup of the entire WGS save folder for a specific game package into a local .bak directory before any write operations. This must be called before any replace or injection operations to protect the user's save data from corruption. Returns the path to the backup folder.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "package": {
+            "type": "string",
+            "description": "The full UWP package name of the game to back up. Obtain this from xgpsm_scan output."
+          }
+        },
+        "required": ["package"]
+      }
+    },
+    {
+      "name": "xgpsm_replace",
+      "description": "Replaces one or more save file entries inside an Xbox Game Pass WGS container with files provided by the user (e.g. a Steam save). Always call xgpsm_backup before calling this tool. Returns a summary of replaced and removed entries.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "package": {
+            "type": "string",
+            "description": "The full UWP package name of the game. Obtain this from xgpsm_scan output."
+          },
+          "xuid": {
+            "type": "string",
+            "description": "The XUID of the profile to inject the save into. Obtain this from xgpsm_scan output."
+          },
+          "source_path": {
+            "type": "string",
+            "description": "Absolute path to the file or folder containing the replacement save data (e.g. a Steam save directory or extracted .sav file)."
+          }
+        },
+        "required": ["package", "xuid", "source_path"]
+      }
+    },
+    {
+      "name": "xgpsm_discover_steam",
+      "description": "Scans the local Steam userdata directory to find a matching save folder for a given game by its Steam App ID. Returns the resolved path to the Steam save directory and the Steam User ID if found. Use this when the user wants to migrate a Steam save into Xbox Game Pass.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "steam_app_id": {
+            "type": "string",
+            "description": "The numeric Steam App ID for the game (e.g. '1716740' for Starfield). Can be found on SteamDB or the game's Steam store page."
+          }
+        },
+        "required": ["steam_app_id"]
+      }
+    }
+  ]
+}
