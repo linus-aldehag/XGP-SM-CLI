@@ -1,105 +1,55 @@
-# 🎮 XGP‑Save‑Tools 🎮
+# 🤖 XGP-SM (Agentic Xbox Game Pass Save Manager)
 
-A .NET version of [XGP-save-extractor](https://github.com/Z1ni/XGP-save-extractor) rebuilt with new features, allows you to **extract** or **replace** Xbox Game Pass (PC) save files, enabling easy transfer of game saves between Xbox Game Pass and Steam/Epic versions (on supported games).
+An intelligent, zero-dependency .NET 10 CLI utility designed to seamlessly enumerate, extract, move, and hot-swap local Xbox Game Pass (UWP/WGS) save data across multiple user profiles and alternative PC storefronts (Steam/Epic).
 
-This version includes:
-- Generic handler (allows extraction of saves from ANY game as long as it does not require any extra encryption)
-- Replace mode (helps you to transfer saves from steam/epic into Xbox Game Pass)
-- Custom directories 
-- Better menu navigation
----
+XGP-SM is specifically built as a **headless, deterministic core engine** designed to be orchestrated by Agentic AI models. Rather than relying on a traditional interactive terminal, XGP-SM outputs strict, machine-readable JSON payloads, allowing AI agents to read local save structures, resolve Steam paths, and seamlessly migrate saves.
 
-## Requirements
+## 🌟 Acknowledgments & Kudos
 
-- **.NET 6 runtime** 
+This project builds upon the fantastic foundational work of the community:
+- **[brodrigz/XgpSaveTools](https://github.com/brodrigz/XgpSaveTools)**: The robust .NET parsing foundation that this project was forked from.
+- **[Z1ni/XGP-save-extractor](https://github.com/Z1ni/XGP-save-extractor)**: The original Python-based tool that pioneered WGS binary extraction and inspired this entire ecosystem.
+
+Thank you to these developers for making this possible!
+
+## 🚀 The Vision: Agentic Orchestration
+
+Instead of forcing an AI model to parse complex local binary streams or deep Windows paths directly—which drains token context and introduces hallucination risks—the architecture separates the utility into two distinct layers:
+
+1. **The Deterministic Core CLI (.NET 10):** A high-performance, native executable that interacts directly with the Windows filesystem, reads/writes binary `container.index` files, handles local file backups, and exposes a clean, machine-readable interface via structured JSON payloads.
+2. **The Agentic AI Layer:** External AI orchestration scripts (housed in the `AgenticSkills/` directory) that consume the Core CLI's JSON outputs, handle cloud path resolutions, and perform high-level cross-profile splicing.
+
+## 🛠️ Requirements
+
 - Windows 10/11 (UWP package layout located at `%LOCALAPPDATA%\Packages`)
----
+- **.NET 10 Runtime** (if running from source; pre-compiled versions use Native AOT and have zero dependencies).
 
-## Extensibility
+## 💻 Usage
 
-Most games will work using the generic handler.
-> **Obs**: If a game is not registered on the `games.json`, it's extracted files names will have no extension suffixes.
+XGP-SM is intended to be called headlessly by automation scripts or AI agents.
 
-Some games require unique handlers, those have to be implemented.
-
-Configure supported games via a strongly-typed `games.json` file:
-
-```jsonc
-{
-  "games": [
-    {
-      "name": "Atomic Heart",
-      "package": "FocusHomeInteractiveSA.579645D26CFD_4hny5m903y3g0",
-      "handler": "1c1f",
-      "handler_args": { "suffix": ".sav" }
-    },
-    {
-      "name": "Starfield",
-      "package": "BethesdaSoftworks.Starfield_8wekyb3d8bbwe",
-      "handler": "starfield"
-    }
-    // Add or tweak game entries here...
-  ]
-}
-```
-
-- **`package`**: Folder path within `%LOCALAPPDATA%\Packages`
-- **`handler`**: Built‑in save format handlers (`generic`,`1c1f`, `1cnf`, `starfield`, etc.)
-- **`handler_args`**: Handler-specific configurations such as file extension (`{ "suffix": ".sav" }`)
-
-If a game requires a new format handler, you must implement the `ISaveHandler` interface.
-
----
-
-## How to Use
-
-### Extract Saves
-
-1. Select your game from the available list, or enter a path to your `wgs` directory.
-2. Select your user container ID.
-3. Choose **Extract Files**.
-4. The tool will display each `OutputName` and generate a ZIP file in the root directory.
-
-![Extracting Saves](https://github.com/user-attachments/assets/e8806a1a-5002-45e1-b4cc-ddcc321689bd)
-
-
-### Replace a Save Entry
-
-1. Select **Replace Entry**.
-2. Choose the save slot to overwrite.
-3. Provide the file path to your new save file.
-4. Keep replacing slots until you're done, then select **Finish**
-4. The tool automatically **backs up** the container before overwriting every selected file.
-
-![Replacing Saves](https://github.com/user-attachments/assets/73054752-6f65-4f54-a0eb-f3f18e8c0472)
-
-
-> **Caution**: Not all listed entries are save slots, some files contain crucial general information and can break the game if replaced.
-
----
-
-## Build & Installation
-
-You can grab the latest pre-built executable release at https://github.com/brodrigz/XgpSaveTools/releases/latest
-
-### Build from Source
-
-If you prefer to build yourself, clone the repo and publish with .NET 6:
+### Scan Local Profiles
+Discover installed XGP titles and enumerate user profile footprints.
 
 ```bash
-dotnet publish Xgpst_ConsoleApp/Xgpst_ConsoleApp.csproj \
+xgpsm scan --json
+```
+
+### Extract Save Data
+Target a specific user profile and extract all raw save chunks.
+
+```bash
+xgpsm extract --package <PackageName> --xuid <XUID> --json
+```
+
+## 🏗️ Build from Source
+
+Clone the repository and publish utilizing .NET 10 Native AOT for a standalone executable:
+
+```bash
+dotnet publish XgpSm.Cli/XgpSm.Cli.csproj \
   -c Release \
   -r win-x64 \
-  --self-contained false \
-  /p:PublishSingleFile=true \
-  --output bin/Release/net6.0/publish/win-x64
+  /p:PublishAot=true \
+  --output bin/Release/net10.0/publish/win-x64
 ```
----
-
-## Acknowledgments & Contributions
-
-- Inspired by [Z1ni’s Python XGP-save-extractor](https://github.com/Z1ni/XGP-save-extractor).
-- [@snoozbuster](https://github.com/snoozbuster) for reverse engineering container format at https://github.com/goatfungus/NMSSaveEditor/issues/306.
-- Contributions and pull requests are very welcome. Please submit issues or pull requests with your game’s package name, handler type, and relevant samples.
-
----
