@@ -14,6 +14,8 @@ Thank you to these developers for making this possible!
 
 ## 🚀 The Vision: Agentic Orchestration
 
+Ultimately, this vision is about moving away from manually keeping track of random container IDs and bouncing various commands and their results back and forth just to reach your goal. By adding specific, structured capabilities to the application itself—coupled with deep agentic skills that understand how to utilize them fully—we unlock true autonomous save orchestration.
+
 Instead of forcing an AI model to parse complex local binary streams or deep Windows paths directly—which drains token context and introduces hallucination risks—the architecture separates the utility into two distinct layers:
 
 1. **The Deterministic Core CLI (.NET 10):** A high-performance, native executable that interacts directly with the Windows filesystem, reads/writes binary `container.index` files, handles local file backups, and exposes a clean, machine-readable interface via structured JSON payloads.
