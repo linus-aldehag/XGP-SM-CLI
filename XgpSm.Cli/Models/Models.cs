@@ -12,6 +12,7 @@ namespace XgpSm.Cli.Models
     [JsonSerializable(typeof(BackupResult))]
     [JsonSerializable(typeof(ReplaceResult))]
     [JsonSerializable(typeof(PlayerDbResponse))]
+    [JsonSerializable(typeof(TransferResult))]
     internal partial class AppJsonContext : JsonSerializerContext
     {
     }
@@ -68,5 +69,11 @@ namespace XgpSm.Cli.Models
     {
         public int replaced { get; set; }
         public int removed { get; set; }
+    }
+
+    public class TransferResult
+    {
+        public bool success { get; set; }
+        public string targetPath { get; set; } = string.Empty;
     }
 }

@@ -1,4 +1,4 @@
-﻿using System.IO.Compression;
+using System.IO.Compression;
 using System.Text;
 using XgpSaveTools.BinaryStructures;
 using XgpSaveTools.Extensions;
@@ -74,6 +74,20 @@ namespace XgpSaveTools
 
         public string BackupFolder(GameInfo gameInfo, UserContainerFolder userContainer) => CopyDirectory(userContainer.Dir,
             Path.Combine(BackupOutput, DateTime.Now.ToString("yyyy.MM.dd"), gameInfo.Name, userContainer.UserTag));
+
+        public string TransferFolder(GameInfo gameInfo, string sourceXuid, string targetXuid)
+        {
+            var baseDir = OverrideWgsPath ?? Path.Combine(PackagesRoot, gameInfo.Package, "SystemAppData", "wgs");
+            var sourceDirs = InnerFindUserContainers(baseDir);
+            var sourceContainer = sourceDirs.FirstOrDefault(c => c.UserTag == sourceXuid || c.Dir.Contains(sourceXuid));
+            
+            if (sourceContainer == null) return string.Empty;
+
+            var targetFolderName = Path.GetFileName(sourceContainer.Dir).Replace(sourceXuid, targetXuid);
+            var targetDir = Path.Combine(baseDir, targetFolderName);
+
+            return CopyDirectory(sourceContainer.Dir, targetDir);
+        }
 
         public IEnumerable<SaveFile> GetSaveEntries(GameInfo info, UserContainerFolder userContainer)
         {
