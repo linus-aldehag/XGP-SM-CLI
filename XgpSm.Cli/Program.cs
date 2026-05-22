@@ -77,11 +77,21 @@ namespace XgpSm.Cli
 
             transferCommand.SetHandler((package, sourceXuid, targetXuid, json) => TransferCommandHandler.Handle(package, sourceXuid, targetXuid, json), packageOption, sourceXuidOption, targetXuidOption, jsonOption);
 
+            var analyzeCommand = new Command("analyze", "Reads the Magic Bytes of the save container to guess its format")
+            {
+                packageOption,
+                xuidOption,
+                jsonOption
+            };
+
+            analyzeCommand.SetHandler((package, xuid, json) => AnalyzeCommandHandler.Handle(package, xuid, json), packageOption, xuidOption, jsonOption);
+
             rootCommand.AddCommand(scanCommand);
             rootCommand.AddCommand(exportCommand);
             rootCommand.AddCommand(backupCommand);
             rootCommand.AddCommand(replaceCommand);
             rootCommand.AddCommand(transferCommand);
+            rootCommand.AddCommand(analyzeCommand);
 
             return await rootCommand.InvokeAsync(args);
         }

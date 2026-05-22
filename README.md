@@ -65,6 +65,18 @@ Move save game data between different Xbox profiles on the same disk. This direc
 xgpsm transfer --package <PackageName> --source-xuid <SourceXUID> --target-xuid <TargetXUID> --json
 ```
 
+### Forensic Magic-Byte Analysis
+Read the raw file headers of the Xbox save chunks to heuristically determine the native game engine or file format without relying on external wikis.
+
+```bash
+xgpsm analyze --package <PackageName> --xuid <XUID> --json
+```
+
+## 🧩 The Role of Specialized Handlers
+The built-in `GenericHandler` simply outputs the raw filename stored in the WGS container. While this is sufficient for `scan` and `transfer` (which operate on raw UWP directories), **specialized handlers are highly recommended for `export` and `replace` operations**.
+- **For `export`**: Specialized handlers automatically rename the raw Xbox chunks back into standard PC formats (e.g., `.sav`, `.dat`), making them compatible with Steam or Epic.
+- **For `replace`**: Specialized handlers allow the CLI to correctly map incoming standard PC files to the obfuscated Xbox blobs they need to replace.
+
 ## 🏗️ Build from Source
 
 Clone the repository and publish utilizing .NET 10 Native AOT for a standalone executable:

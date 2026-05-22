@@ -13,6 +13,7 @@ namespace XgpSm.Cli.Models
     [JsonSerializable(typeof(ReplaceResult))]
     [JsonSerializable(typeof(PlayerDbResponse))]
     [JsonSerializable(typeof(TransferResult))]
+    [JsonSerializable(typeof(AnalyzeResult))]
     internal partial class AppJsonContext : JsonSerializerContext
     {
     }
@@ -75,5 +76,14 @@ namespace XgpSm.Cli.Models
     {
         public bool success { get; set; }
         public string targetPath { get; set; } = string.Empty;
+    }
+
+    public class AnalyzeResult
+    {
+        public string largestFileId { get; set; } = string.Empty;
+        public long sizeBytes { get; set; }
+        public string magicBytesHex { get; set; } = string.Empty;
+        public string magicBytesAscii { get; set; } = string.Empty;
+        public string guessedFormat { get; set; } = string.Empty;
     }
 }
