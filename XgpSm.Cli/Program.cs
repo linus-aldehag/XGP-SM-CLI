@@ -19,7 +19,7 @@ namespace XgpSm.Cli
                 jsonOption
             };
 
-            scanCommand.SetHandler((json) => ScanCommandHandler.Handle(json), jsonOption);
+            scanCommand.SetHandler(async (json) => await ScanCommandHandler.HandleAsync(json), jsonOption);
 
             var packageOption = new Option<string>(
                 name: "--package",

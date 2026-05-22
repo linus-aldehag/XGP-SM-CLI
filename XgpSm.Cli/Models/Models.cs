@@ -11,6 +11,7 @@ namespace XgpSm.Cli.Models
     [JsonSerializable(typeof(ErrorResult))]
     [JsonSerializable(typeof(BackupResult))]
     [JsonSerializable(typeof(ReplaceResult))]
+    [JsonSerializable(typeof(PlayerDbResponse))]
     internal partial class AppJsonContext : JsonSerializerContext
     {
     }
@@ -25,9 +26,26 @@ namespace XgpSm.Cli.Models
     public class ProfileInfo
     {
         public string xuid { get; set; } = string.Empty;
+        public string username { get; set; } = string.Empty;
         public DateTime lastPlayed { get; set; }
         public long saveSize { get; set; }
         public int chunkCount { get; set; }
+    }
+
+    public class PlayerDbResponse
+    {
+        public bool success { get; set; }
+        public PlayerDbData? data { get; set; }
+    }
+
+    public class PlayerDbData
+    {
+        public PlayerDbPlayer? player { get; set; }
+    }
+
+    public class PlayerDbPlayer
+    {
+        public string username { get; set; } = string.Empty;
     }
 
     public class ExtractResult
