@@ -14,7 +14,7 @@ namespace XgpSm.Cli.Models
     [JsonSerializable(typeof(PlayerDbResponse))]
     [JsonSerializable(typeof(TransferResult))]
     [JsonSerializable(typeof(AnalyzeResult))]
-    internal partial class AppJsonContext : JsonSerializerContext
+    public partial class AppJsonContext : JsonSerializerContext
     {
     }
 

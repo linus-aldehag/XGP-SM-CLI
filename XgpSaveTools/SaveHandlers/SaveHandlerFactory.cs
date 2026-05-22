@@ -1,4 +1,4 @@
-﻿using XgpSaveTools.SaveHandlers.Impl;
+using XgpSaveTools.SaveHandlers.Impl;
 using XgpSaveTools.SaveHandlers.Impl.Generic;
 
 namespace XgpSaveTools.SaveHandlers
@@ -31,8 +31,13 @@ namespace XgpSaveTools.SaveHandlers
 
         public static ISaveHandler Get(string name)
         {
-            var handler = Handlers.LastOrDefault(h => h.CanHandle(name)) ?? throw new NotSupportedException($"Handler '{name}' not supported.");
-            Console.WriteLine($"Using {handler.GetType().Name}");
+            var handler = Handlers.LastOrDefault(h => h.CanHandle(name));
+
+            if (handler == null)
+            {
+                handler = new GenericHandler();
+            }
+
             return handler;
         }
     }

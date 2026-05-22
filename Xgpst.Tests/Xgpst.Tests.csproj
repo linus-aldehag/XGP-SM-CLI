@@ -9,6 +9,9 @@
     <IsTestProject>true</IsTestProject>
   </PropertyGroup>
 
+    <ItemGroup>
+        <ProjectReference Include="..\XgpSm.Cli\XgpSm.Cli.csproj" />
+    </ItemGroup>
 
 	<ItemGroup>
 		<Content Include="FilesToCheck\**\*">
