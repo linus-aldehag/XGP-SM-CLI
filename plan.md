@@ -33,17 +33,17 @@ CLI Engine: System.CommandLine or standard POSIX arguments to facilitate headles
 │  • Scrape PCGamingWiki / Wiki APIs    │
 │  • Heuristics on unlisted save formats │
 └────────────────────────────────────────┘
-Phase 1: Machine-Readable Core Engine
-JSON Serialization: Implement structured flags like xgpst --scan --json and xgpst --extract <XUID> --json.
+Phase 1: Machine-Readable Core Engine [✅ COMPLETED]
+The Core Engine CLI has been successfully implemented, providing the following headless JSON endpoints:
+- `scan`: Enumerates local packages and separates out save profiles/footprints.
+- `extract`: Unpacks WGS containers into zip archives.
+- `backup`: Creates safe timestamped backup caches of WGS profiles.
+- `replace`: Injects foreign save data safely into local container logic.
 
-Virtual Name Extraction: Parse the binary container.index within %LOCALAPPDATA%\Packages\<PackageName>\SystemAppData\wgs\<XUID>\ to extract the true filenames assigned by the game, mapping them directly out of their randomized hex GUID files.
-
-Write & Injection Capabilities: Implement safely structured commands to append or modify entries inside the binary container index without bricking local database structures.
-
-Phase 2: Agentic Automation Skills (Local Orchestration)
-Cross-Profile Splicing: Develop scripts enabling the AI agent to duplicate an active wgs profile, restructure the virtual folder layout, inject foreign save states, and ensure target indexing keys match seamlessly.
-
-Smart Local Target Discovery: Leverage local environmental scans to find active Steam paths (e.g., tracking down matching APPIDs within user directories like C:\Program Files (x86)\Steam\userdata\<SteamID>\).
+Phase 2: Agentic Automation Skills (Local Orchestration) [🚧 IN PROGRESS]
+The next steps involve building the higher-level automation wrapper scripts that use the AI to orchestrate these new Core CLI commands. 
+- **Cross-Profile Splicing**: Develop scripts enabling the AI agent to orchestrate the duplication of an active wgs profile by chaining `backup` and `replace`.
+- **Smart Local Target Discovery**: Leverage local environmental scans to find active Steam paths (e.g., tracking down matching APPIDs within user directories like `C:\Program Files (x86)\Steam\userdata\<SteamID>\`).
 
 Phase 3: Autonomous Web Heuristics (Unknown Titles)
 Scraping Fallbacks: When encountering unlisted or newly launched titles, the AI agent initiates background web crawls via PCGamingWiki or community data sources to identify the XGP Package Name alongside target extensions.
