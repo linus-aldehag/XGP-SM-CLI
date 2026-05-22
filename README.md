@@ -37,11 +37,11 @@ Discover installed XGP titles and enumerate user profile footprints.
 xgpsm scan --json
 ```
 
-### Extract Save Data
-Target a specific user profile and extract all raw save chunks into a zip file.
+### Export Save Data
+Target a specific user profile and export all raw save chunks into a zip file formatted for PC storefronts (Steam/Epic).
 
 ```bash
-xgpsm extract --package <PackageName> --xuid <XUID> --json
+xgpsm export --package <PackageName> --xuid <XUID> --json
 ```
 
 ### Backup Profile Data
@@ -56,6 +56,13 @@ Inject foreign saves (e.g. from Steam) securely into the local WGS container, ma
 
 ```bash
 xgpsm replace --package <PackageName> --xuid <XUID> --source <PathToSourceSaves> --json
+```
+
+### Cross-Profile Save Transfer
+Move save game data between different Xbox profiles on the same disk. This direct container migration perfectly handles overwriting an existing profile's directories, or populating a completely empty new profile, without needing to perform complex extraction mapping.
+
+```bash
+xgpsm transfer --package <PackageName> --source-xuid <SourceXUID> --target-xuid <TargetXUID> --json
 ```
 
 ## 🏗️ Build from Source

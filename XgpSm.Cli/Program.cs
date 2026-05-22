@@ -29,14 +29,14 @@ namespace XgpSm.Cli
                 name: "--xuid",
                 description: "Target user XUID") { IsRequired = true };
 
-            var extractCommand = new Command("extract", "Extract files from a profile")
+            var exportCommand = new Command("export", "Export save files into raw PC format (non-Xbox format)")
             {
                 packageOption,
                 xuidOption,
                 jsonOption
             };
 
-            extractCommand.SetHandler((package, xuid, json) => ExtractCommandHandler.Handle(package, xuid, json), packageOption, xuidOption, jsonOption);
+            exportCommand.SetHandler((package, xuid, json) => ExportCommandHandler.Handle(package, xuid, json), packageOption, xuidOption, jsonOption);
 
             var backupCommand = new Command("backup", "Creates a timestamped backup of an Xbox Game Pass WGS save folder")
             {
@@ -59,12 +59,29 @@ namespace XgpSm.Cli
                 jsonOption
             };
 
-            replaceCommand.SetHandler((package, xuid, source, json) => ReplaceCommandHandler.Handle(package, xuid, source, json), packageOption, xuidOption, sourceOption, jsonOption);
+            var targetXuidOption = new Option<string>(
+                name: "--target-xuid",
+                description: "Target user XUID to transfer to") { IsRequired = true };
+
+            var sourceXuidOption = new Option<string>(
+                name: "--source-xuid",
+                description: "Source user XUID to transfer from") { IsRequired = true };
+
+            var transferCommand = new Command("transfer", "Moves full directory structures between Xbox profiles on disk")
+            {
+                packageOption,
+                sourceXuidOption,
+                targetXuidOption,
+                jsonOption
+            };
+
+            transferCommand.SetHandler((package, sourceXuid, targetXuid, json) => TransferCommandHandler.Handle(package, sourceXuid, targetXuid, json), packageOption, sourceXuidOption, targetXuidOption, jsonOption);
 
             rootCommand.AddCommand(scanCommand);
-            rootCommand.AddCommand(extractCommand);
+            rootCommand.AddCommand(exportCommand);
             rootCommand.AddCommand(backupCommand);
             rootCommand.AddCommand(replaceCommand);
+            rootCommand.AddCommand(transferCommand);
 
             return await rootCommand.InvokeAsync(args);
         }

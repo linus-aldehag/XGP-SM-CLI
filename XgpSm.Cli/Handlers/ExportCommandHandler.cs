@@ -7,7 +7,7 @@ using XgpSm.Cli.Models;
 
 namespace XgpSm.Cli.Handlers
 {
-    public static class ExtractCommandHandler
+    public static class ExportCommandHandler
     {
         public static void Handle(string package, string xuid, bool json)
         {
