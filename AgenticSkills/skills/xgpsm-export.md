@@ -25,6 +25,8 @@ Extracts the binary UWP save container and exports it as standard, decrypted PC 
 
 ## Notes
 
+- Some games require specialized handlers to export successfully into a format recognizable by Steam/Epic (e.g., concatenating chunks or appending `.sav`). If a game exports using the `GenericHandler`, the resulting files might require manual renaming.
+- Always verify the exported files before deleting original save data.
 - Extracted files may have no extension if the game is not registered in `games.json`. This is expected for unregistered titles.
 - The extracted folder is safe to copy, zip, or use as a source for replacing saves in another storefront.
 - Do not modify the original WGS container — extraction is always read-only.
