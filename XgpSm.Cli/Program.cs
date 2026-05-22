@@ -1,9 +1,6 @@
-using System;
 using System.CommandLine;
-using System.Text.Json;
 using System.Threading.Tasks;
-using XgpSaveTools;
-using XgpSaveTools.Common;
+using XgpSm.Cli.Handlers;
 
 namespace XgpSm.Cli
 {
@@ -22,23 +19,7 @@ namespace XgpSm.Cli
                 jsonOption
             };
 
-            scanCommand.SetHandler((json) =>
-            {
-                var manager = new XboxContainerRepository();
-                var games = GameList.DiscoverUserGames(GameList.ReadGameList());
-                
-                if (json)
-                {
-                    Console.WriteLine(JsonSerializer.Serialize(games, new JsonSerializerOptions { WriteIndented = true }));
-                }
-                else
-                {
-                    foreach (var game in games)
-                    {
-                        Console.WriteLine($"- {game.Name} (Package: {game.Package})");
-                    }
-                }
-            }, jsonOption);
+            scanCommand.SetHandler((json) => ScanCommandHandler.Handle(json), jsonOption);
 
             var packageOption = new Option<string>(
                 name: "--package",
@@ -55,41 +36,35 @@ namespace XgpSm.Cli
                 jsonOption
             };
 
-            extractCommand.SetHandler((package, xuid, json) =>
+            extractCommand.SetHandler((package, xuid, json) => ExtractCommandHandler.Handle(package, xuid, json), packageOption, xuidOption, jsonOption);
+
+            var backupCommand = new Command("backup", "Creates a timestamped backup of an Xbox Game Pass WGS save folder")
             {
-                var manager = new XboxContainerRepository();
-                var games = GameList.DiscoverUserGames(GameList.ReadGameList());
-                var targetGame = games.FirstOrDefault(g => g.Package == package);
-                
-                if (targetGame == null)
-                {
-                    Console.WriteLine(json ? "{\"error\": \"Game package not found\"}" : "Error: Game package not found");
-                    return;
-                }
+                packageOption,
+                xuidOption,
+                jsonOption
+            };
 
-                var containers = manager.FindUserContainers(targetGame.Package);
-                var targetContainer = containers.FirstOrDefault(c => c.UserTag == xuid || c.Dir.Contains(xuid));
+            backupCommand.SetHandler((package, xuid, json) => BackupCommandHandler.Handle(package, xuid, json), packageOption, xuidOption, jsonOption);
 
-                if (targetContainer == null)
-                {
-                    Console.WriteLine(json ? "{\"error\": \"Container/XUID not found\"}" : "Error: Container/XUID not found");
-                    return;
-                }
+            var sourceOption = new Option<string>(
+                name: "--source",
+                description: "Source directory containing replacement save files") { IsRequired = true };
 
-                int extracted = manager.Extract(targetGame, targetContainer);
+            var replaceCommand = new Command("replace", "Inject external save data into an Xbox Game Pass WGS container")
+            {
+                packageOption,
+                xuidOption,
+                sourceOption,
+                jsonOption
+            };
 
-                if (json)
-                {
-                    Console.WriteLine(JsonSerializer.Serialize(new { success = true, filesExtracted = extracted }));
-                }
-                else
-                {
-                    Console.WriteLine($"Success: {extracted} files extracted.");
-                }
-            }, packageOption, xuidOption, jsonOption);
+            replaceCommand.SetHandler((package, xuid, source, json) => ReplaceCommandHandler.Handle(package, xuid, source, json), packageOption, xuidOption, sourceOption, jsonOption);
 
             rootCommand.AddCommand(scanCommand);
             rootCommand.AddCommand(extractCommand);
+            rootCommand.AddCommand(backupCommand);
+            rootCommand.AddCommand(replaceCommand);
 
             return await rootCommand.InvokeAsync(args);
         }

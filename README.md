@@ -38,10 +38,24 @@ xgpsm scan --json
 ```
 
 ### Extract Save Data
-Target a specific user profile and extract all raw save chunks.
+Target a specific user profile and extract all raw save chunks into a zip file.
 
 ```bash
 xgpsm extract --package <PackageName> --xuid <XUID> --json
+```
+
+### Backup Profile Data
+Create a safe, timestamped backup cache of a profile's WGS save folder before attempting any modifications.
+
+```bash
+xgpsm backup --package <PackageName> --xuid <XUID> --json
+```
+
+### Replace/Inject Save Data
+Inject foreign saves (e.g. from Steam) securely into the local WGS container, mapping and replacing active binaries automatically.
+
+```bash
+xgpsm replace --package <PackageName> --xuid <XUID> --source <PathToSourceSaves> --json
 ```
 
 ## 🏗️ Build from Source
