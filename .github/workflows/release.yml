@@ -1,0 +1,36 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*' # Trigger when a tag starting with 'v' (e.g., v1.0.0) is pushed
+
+jobs:
+  build-and-release:
+    name: Build and Release
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '10.0.x'
+
+    - name: Publish Native AOT
+      # Publish as a self-contained Native AOT executable for Windows x64
+      run: dotnet publish XgpSm.Cli/XgpSm.Cli.csproj -c Release -r win-x64 -o ./publish
+
+    - name: Create Zip Archive
+      # Zip the resulting executable (and any associated files like pdb)
+      run: Compress-Archive -Path ./publish/* -DestinationPath XgpSm-win-x64.zip
+
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v2
+      with:
+        files: XgpSm-win-x64.zip
+        generate_release_notes: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
