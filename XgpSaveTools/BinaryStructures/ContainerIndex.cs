@@ -78,36 +78,5 @@ namespace XgpSaveTools.BinaryStructures
 
             return m;
         }
-
-        // needs testing
-        //public static void Write(string indexPath, ContainerIndexBinaryModel m, List<ContainerEntryBinaryModel> newSlots)
-        //{
-        //	using var fs = File.Create(indexPath);
-        //	using var bw = new BinaryWriter(fs, Encoding.Unicode);
-
-        //	bw.Write(m.Version);
-        //	bw.Write(newSlots.Count);
-
-        //	// two names
-        //	bw.WriteUtf16(m.PackageName);
-        //	bw.WriteUtf16(m.StorePackage);
-
-        //	// dump the raw header back
-        //	bw.Write(m.UnknownHeader);
-
-        //	// now each slot
-        //	foreach (var s in newSlots)
-        //	{
-        //		bw.WriteUtf16(s.Name1);
-        //		bw.WriteUtf16(s.Name2);
-        //		bw.WriteUtf16(s.AddressHex);
-
-        //		bw.Write(s.ContainerNum);
-        //		bw.Write(s.UnknownCount);
-
-        //		bw.Write(s.FileId.ToByteArray());
-        //		bw.Write(s.Padding);
-        //	}
-        //}
     }
 }

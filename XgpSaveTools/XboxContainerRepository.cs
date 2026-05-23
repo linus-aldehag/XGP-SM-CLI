@@ -25,7 +25,7 @@ namespace XgpSaveTools
             var userContainers = FindUserContainers(path);
             if (!userContainers.Any()) throw new Exception("No user container found, directory is not on wgs format");
             // read first to discover package
-            var result = ReadUserContainers(userContainers.FirstOrDefault().Dir);
+            var result = ReadUserContainers(userContainers.First().Dir);
             var found = ReadGameList().FirstOrDefault(x => x.Package == result.StorePkg);
             if (found == null)
             {
@@ -108,7 +108,7 @@ namespace XgpSaveTools
         {
             var file = new FileInfo(entry.Path);
             var dir = file.Directory;
-            var otherFiles = dir.EnumerateFiles().Where(f => f.FullName != file.FullName).ToArray();
+            var otherFiles = dir!.EnumerateFiles().Where(f => f.FullName != file.FullName).ToArray();
 
             if (otherFiles.Length == 1 && ExtensionIsNumeric(otherFiles[0].Extension)) // 1cn1f delete entire folder
             {
@@ -141,7 +141,7 @@ namespace XgpSaveTools
             foreach (var rep in updates)
             {
                 Console.WriteLine($"Replacing {rep.TargetFile.Path}");
-                File.Copy(rep.ReplacementFile.FullName, rep.TargetFile.Path, overwrite: true);
+                File.Copy(rep.ReplacementFile!.FullName, rep.TargetFile.Path, overwrite: true);
                 Console.WriteLine("");
             }
 
@@ -259,6 +259,7 @@ namespace XgpSaveTools
         public void AddEntry(FileInfo file, GameInfo info, UserContainerFolder userContainer)
         {
             throw new NotImplementedException();
+            /*
             var (storePkg, conts) = ReadUserContainers(userContainer.Dir);
 
             using var fs = File.OpenRead(file.FullName);
@@ -269,6 +270,7 @@ namespace XgpSaveTools
             {
                 ContainerNum = (byte)(conts.Max(x => x.Number) + 1)
             };
+            */
         }
 
         #endregion PRIVATE

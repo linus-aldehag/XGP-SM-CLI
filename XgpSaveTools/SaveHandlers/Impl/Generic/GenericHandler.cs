@@ -12,7 +12,6 @@ namespace XgpSaveTools.SaveHandlers.Impl.Generic
             {
                 foreach (var file in container.Files)
                 {
-                    //var name = container.Name + (args?.Suffix ?? string.Empty);
                     yield return new(file.Name + (args?.Suffix ?? string.Empty), file);
                 }
             }

@@ -56,7 +56,7 @@ namespace XgpSm.Cli.Handlers
             byte[] magicBytes = new byte[Math.Min(16, fileInfo.Length)];
             using (var fs = new FileStream(fileInfo.FullName, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
-                fs.Read(magicBytes, 0, magicBytes.Length);
+                _ = fs.Read(magicBytes, 0, magicBytes.Length);
             }
 
             string hexStr = BitConverter.ToString(magicBytes).Replace("-", " ");
