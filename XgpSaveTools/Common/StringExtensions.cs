@@ -1,8 +1,8 @@
-﻿namespace XgpSaveTools.Extensions
+namespace XgpSaveTools.Extensions
 {
     public static class StringExtensions
     {
-        public static string RemoveSuffix(this string str, string suffix)
+        public static string? RemoveSuffix(this string? str, string suffix)
         {
             if (str != null && suffix != null && str.EndsWith(suffix))
             {

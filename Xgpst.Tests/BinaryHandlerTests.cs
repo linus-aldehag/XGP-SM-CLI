@@ -29,8 +29,8 @@ namespace Xgpst.Tests
         public void RestoredSaveFiles_ExistAndCanBeRead()
         {
             // Verify the legacy python-extracted saves were restored correctly via project MSBuild copy
-            var targetDir = Path.Combine(AppContext.BaseDirectory, "FilesToCheck", "refference");
-            Assert.True(Directory.Exists(targetDir), "FilesToCheck/refference directory was not copied to output");
+            var targetDir = Path.Combine(AppContext.BaseDirectory, "FilesToCheck", "reference");
+            Assert.True(Directory.Exists(targetDir), "FilesToCheck/reference directory was not copied to output");
 
             var files = Directory.GetFiles(targetDir);
             Assert.NotEmpty(files);
