@@ -1,4 +1,4 @@
-﻿using System.Text;
+using System.Text;
 using XgpSaveTools.Extensions;
 
 namespace XgpSaveTools.BinaryStructures
@@ -10,21 +10,21 @@ namespace XgpSaveTools.BinaryStructures
     {
         public int Version { get; set; } // unused
         public int EntryCount { get; set; } // unused
-        public string PackageName { get; set; }
-        public string StorePackage { get; set; }
-        public byte[] UnknownHeader { get; set; }  // captures creation_date + unknown + stray UTF‑16 + unknown, unused
+        public string PackageName { get; set; } = string.Empty;
+        public string StorePackage { get; set; } = string.Empty;
+        public byte[] UnknownHeader { get; set; } = Array.Empty<byte>();  // captures creation_date + unknown + stray UTF‑16 + unknown, unused
         public List<ContainerEntryBinaryModel> Entries { get; } = new();
     }
 
     public class ContainerEntryBinaryModel
     {
-        public string Name1 { get; set; }
-        public string Name2 { get; set; } // unused
-        public string AddressHex { get; set; } // unknown hex address, unused
+        public string Name1 { get; set; } = string.Empty;
+        public string Name2 { get; set; } = string.Empty; // unused
+        public string AddressHex { get; set; } = string.Empty; // unknown hex address, unused
         public byte ContainerNum { get; set; } // unused
         public int UnknownCount { get; set; }   // the 4 bytes you read after containerNum, unused
         public Guid FileId { get; set; }   // the 16 byte GUID, unused
-        public byte[] Padding { get; set; }   // the 8 byte FILETIME + 16 byte padding, unused
+        public byte[] Padding { get; set; } = Array.Empty<byte>();   // the 8 byte FILETIME + 16 byte padding, unused
     }
 
     public static class ContainerIndexBinaryStructure
