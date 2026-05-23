@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
+using System.Text.Json;
 using XgpSaveTools.Records;
 using static XgpSaveTools.Extensions.IoExtensions;
 
@@ -7,20 +6,12 @@ namespace XgpSaveTools.Common
 {
     public static class GameList
     {
-        private static JsonSerializerSettings SerializerSettings => new()
-        {
-            ContractResolver = new DefaultContractResolver
-            {
-                NamingStrategy = new SnakeCaseNamingStrategy()
-            }
-        };
-
         public static List<GameInfo> ReadGameList()
         {
             if (!File.Exists(GameListPath)) throw new FileNotFoundException(GameListPath);
 
             string raw = File.ReadAllText(GameListPath);
-            var wrapper = JsonConvert.DeserializeObject<GameInfoJson>(raw, SerializerSettings);
+            var wrapper = JsonSerializer.Deserialize(raw, GameListJsonContext.Default.GameInfoJson);
             return wrapper?.Games ?? throw new Exception($"Failed to read {GameListPath}");
         }
 

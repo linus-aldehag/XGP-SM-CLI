@@ -1,4 +1,7 @@
-﻿using XgpSaveTools.Extensions;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using XgpSaveTools.Extensions;
+using static System.Text.Json.Serialization.JsonSerializerContext;
 
 namespace XgpSaveTools.Records
 {
@@ -20,5 +23,14 @@ namespace XgpSaveTools.Records
             var result = IoExtensions.GetReadableFileSize(fileinfo.Length);
             return result;
         }
+    }
+
+    [JsonSerializable(typeof(GameInfoJson))]
+    [JsonSourceGenerationOptions(
+        PropertyNamingPolicy = JsonKnownNamingPolicy.SnakeCaseLower,
+        ReadCommentHandling = JsonCommentHandling.Skip,
+        AllowTrailingCommas = true)]
+    public partial class GameListJsonContext : JsonSerializerContext
+    {
     }
 }
