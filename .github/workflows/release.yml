@@ -23,11 +23,16 @@ jobs:
         dotnet-version: '10.0.x'
 
     - name: Publish Native AOT
-      # Publish as a self-contained Native AOT executable for Windows x64
-      run: dotnet publish XgpSm.Cli/XgpSm.Cli.csproj -c Release -r win-x64 -o ./publish
+      # Publish as a self-contained Native AOT executable for Windows x64, skipping debug symbols
+      run: dotnet publish XgpSm.Cli/XgpSm.Cli.csproj -c Release -r win-x64 -p:DebugType=None -p:DebugSymbols=false -o ./publish
+
+    - name: Prepare Files
+      # Copy AgenticSkills into the publish directory
+      run: |
+        Copy-Item -Path AgenticSkills -Destination ./publish/AgenticSkills -Recurse
 
     - name: Create Zip Archive
-      # Zip the resulting executable (and any associated files like pdb)
+      # Zip the resulting executable and agent files
       run: Compress-Archive -Path ./publish/* -DestinationPath XgpSm-win-x64.zip
 
     - name: Create GitHub Release
