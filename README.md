@@ -1,6 +1,6 @@
 # 🤖 XGP-SM (Agentic Xbox Game Pass Save Manager)
 
-An intelligent, zero-dependency .NET 10 CLI utility designed to seamlessly enumerate, extract, move, and hot-swap local Xbox Game Pass (UWP/WGS) save data across multiple user profiles, with partial support for alternative PC storefronts (Steam/Epic).
+A .NET 10 CLI utility designed to seamlessly enumerate, extract, move, and hot-swap local Xbox Game Pass (UWP/WGS) save data across multiple user profiles and alternative PC storefronts (Steam/Epic).
 
 XGP-SM is specifically built as a **headless, deterministic core engine** designed to be orchestrated by Agentic AI models. Rather than relying on a traditional interactive terminal, XGP-SM outputs strict, machine-readable JSON payloads, allowing AI agents to read local save structures, resolve external paths, and migrate saves across local profiles.
 
@@ -14,12 +14,12 @@ Thank you to these developers for making this possible!
 
 ## 🚀 The Vision: Agentic Orchestration
 
-Ultimately, this vision is about moving away from manually keeping track of random container IDs and bouncing various commands and their results back and forth just to reach your goal. By adding specific, structured capabilities to the application itself—coupled with deep agentic skills that understand how to utilize them fully—we unlock true autonomous save orchestration.
+Ultimately, this vision is about moving away from manually keeping track of random container IDs and bouncing various commands and their results back and forth just to reach your goal. By adding specific, structured capabilities to the application itself, coupled with deep agentic skills that understand how to utilize them fully, we unlock true autonomous save orchestration.
 
 Instead of forcing an AI model to parse complex local binary streams or deep Windows paths directly—which drains token context and introduces hallucination risks—the architecture separates the utility into two distinct layers:
 
 1. **The Deterministic Core CLI (.NET 10):** A high-performance, native executable that interacts directly with the Windows filesystem, reads/writes binary `container.index` files, handles local file backups, and exposes a clean, machine-readable interface via structured JSON payloads.
-2. **The Agentic AI Layer:** External AI orchestration scripts (housed in the `AgenticSkills/` directory) that consume the Core CLI's JSON outputs, handle cloud path resolutions, and perform high-level cross-profile splicing.
+2. **The Agentic AI Layer:** External AI orchestration scripts (housed in the `skills/` directory) that consume the Core CLI's JSON outputs, handle cloud path resolutions, and perform high-level cross-profile splicing.
 
 ## 🛠️ Requirements
 
