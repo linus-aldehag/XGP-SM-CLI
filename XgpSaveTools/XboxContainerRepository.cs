@@ -145,7 +145,7 @@ namespace XgpSaveTools
         public int Extract(GameInfo info, UserContainerFolder userContainer)
         {
             int result = 0;
-            Console.WriteLine($"- {info.Name}");
+
             try
             {
                 var entries = GetSaveEntries(info, userContainer).ToList();

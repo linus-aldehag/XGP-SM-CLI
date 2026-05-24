@@ -1,8 +1,8 @@
 # 🤖 XGP-SM (Agentic Xbox Game Pass Save Manager)
 
-An intelligent, zero-dependency .NET 10 CLI utility designed to seamlessly enumerate, extract, move, and hot-swap local Xbox Game Pass (UWP/WGS) save data across multiple user profiles and alternative PC storefronts (Steam/Epic).
+An intelligent, zero-dependency .NET 10 CLI utility designed to seamlessly enumerate, extract, move, and hot-swap local Xbox Game Pass (UWP/WGS) save data across multiple user profiles, with partial support for alternative PC storefronts (Steam/Epic).
 
-XGP-SM is specifically built as a **headless, deterministic core engine** designed to be orchestrated by Agentic AI models. Rather than relying on a traditional interactive terminal, XGP-SM outputs strict, machine-readable JSON payloads, allowing AI agents to read local save structures, resolve Steam paths, and seamlessly migrate saves.
+XGP-SM is specifically built as a **headless, deterministic core engine** designed to be orchestrated by Agentic AI models. Rather than relying on a traditional interactive terminal, XGP-SM outputs strict, machine-readable JSON payloads, allowing AI agents to read local save structures, resolve external paths, and migrate saves across local profiles.
 
 ## 🌟 Acknowledgments & Kudos
 
@@ -37,8 +37,8 @@ Discover installed XGP titles and enumerate user profile footprints.
 xgpsm list
 ```
 
-### Export Save Data
-Target a specific user profile and export all raw save chunks into a zip file formatted for PC storefronts (Steam/Epic).
+### Export Save Data (Best-Effort)
+Target a specific user profile and extract all raw save chunks into an output folder. *Note: Formatting these chunks for other storefronts is handler-dependent and provided on a best-effort basis.*
 
 ```bash
 xgpsm export --package <PackageName> --xuid <XUID>
@@ -58,8 +58,8 @@ List all available timestamped profile backups created by the tool.
 xgpsm backups
 ```
 
-### Replace/Inject Save Data
-Inject foreign saves (e.g. from Steam) securely into the local WGS container, mapping and replacing active binaries automatically.
+### Replace/Inject Save Data (Best-Effort)
+Inject foreign saves securely into the local WGS container, mapping and replacing active binaries. *Note: Matching foreign saves to WGS containers is handler-dependent and provided on a best-effort basis.*
 
 ```bash
 xgpsm import --package <PackageName> --xuid <XUID> --source <PathToSourceSaves>
@@ -79,9 +79,9 @@ Read the raw file headers of the Xbox save chunks to heuristically determine the
 xgpsm analyze --package <PackageName> --xuid <XUID>
 ```
 
-## 🧩 The Role of Specialized Handlers
-- **For `export`**: Specialized handlers automatically rename the raw Xbox chunks back into standard PC formats (e.g., `.sav`, `.dat`), making them compatible with Steam or Epic.
-- **For `import`**: Specialized handlers allow the CLI to correctly map incoming standard PC files to the obfuscated Xbox blobs they need to replace.
+## 🧩 The Role of Specialized Handlers (Experimental)
+- **For `export`**: Where supported, specialized handlers attempt to rename the raw Xbox chunks back into standard PC formats (e.g., `.sav`, `.dat`) on a best-effort basis.
+- **For `import`**: Where supported, specialized handlers attempt to map incoming standard PC files to the obfuscated Xbox blobs they need to replace.
 
 ## 📦 Installation & Release Structure
 
