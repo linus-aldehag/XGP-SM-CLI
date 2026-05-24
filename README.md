@@ -51,6 +51,13 @@ Create a safe, timestamped backup cache of a profile's WGS save folder before at
 xgpsm backup --package <PackageName> --xuid <XUID>
 ```
 
+### List Backups
+List all available timestamped profile backups created by the tool.
+
+```bash
+xgpsm backups
+```
+
 ### Replace/Inject Save Data
 Inject foreign saves (e.g. from Steam) securely into the local WGS container, mapping and replacing active binaries automatically.
 

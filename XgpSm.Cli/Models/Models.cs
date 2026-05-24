@@ -14,6 +14,7 @@ namespace XgpSm.Cli.Models
     [JsonSerializable(typeof(PlayerDbResponse))]
     [JsonSerializable(typeof(TransferResult))]
     [JsonSerializable(typeof(AnalyzeResult))]
+    [JsonSerializable(typeof(IEnumerable<BackupInfo>))]
     public partial class AppJsonContext : JsonSerializerContext
     {
     }
@@ -85,5 +86,13 @@ namespace XgpSm.Cli.Models
         public string magicBytesHex { get; set; } = string.Empty;
         public string magicBytesAscii { get; set; } = string.Empty;
         public string guessedFormat { get; set; } = string.Empty;
+    }
+
+    public class BackupInfo
+    {
+        public string date { get; set; } = string.Empty;
+        public string game { get; set; } = string.Empty;
+        public string xuid { get; set; } = string.Empty;
+        public string path { get; set; } = string.Empty;
     }
 }

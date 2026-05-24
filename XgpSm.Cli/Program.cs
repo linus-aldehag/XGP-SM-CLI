@@ -38,6 +38,9 @@ namespace XgpSm.Cli
 
             backupCommand.SetHandler((package, xuid) => BackupCommandHandler.Handle(package, xuid), packageOption, xuidOption);
 
+            var backupsCommand = new Command("backups", "Lists all locally stored timestamped backups");
+            backupsCommand.SetHandler(() => BackupsCommandHandler.Handle());
+
             var sourceOption = new Option<string>(
                 name: "--source",
                 description: "Source directory containing replacement save files") { IsRequired = true };
@@ -79,6 +82,7 @@ namespace XgpSm.Cli
             rootCommand.AddCommand(listCommand);
             rootCommand.AddCommand(exportCommand);
             rootCommand.AddCommand(backupCommand);
+            rootCommand.AddCommand(backupsCommand);
             rootCommand.AddCommand(importCommand);
             rootCommand.AddCommand(migrateCommand);
             rootCommand.AddCommand(analyzeCommand);
