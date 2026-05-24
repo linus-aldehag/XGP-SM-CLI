@@ -46,9 +46,9 @@ namespace Xgpst.Tests
             
             Assert.Equal(0, exitCode);
             Assert.Contains("Usage:", output);
-            Assert.Contains("scan", output);
+            Assert.Contains("list", output);
             Assert.Contains("export", output);
-            Assert.Contains("transfer", output);
+            Assert.Contains("migrate", output);
             Assert.Contains("analyze", output);
         }
 
@@ -56,30 +56,31 @@ namespace Xgpst.Tests
         public void InvalidAnalyzeCommand_ReturnsJsonError()
         {
             // Test that running a command against a non-existent package returns our structured JSON ErrorResult
-            var (output, error, exitCode) = RunCli("analyze --package FakePackage_123 --xuid 0000000000000000 --json");
+            var (output, error, exitCode) = RunCli("analyze --package FakePackage_123 --xuid 0000000000000000");
             
             // Should still return 0 because it's a handled application error outputting JSON
             Assert.Equal(0, exitCode);
             
-            // Verify it parses into our ErrorResult struct
-            var errorResult = JsonSerializer.Deserialize(output.Trim(), AppJsonContext.Default.ErrorResult);
+            // Verify it parses into our ApiResponse struct
+            var errorResult = JsonSerializer.Deserialize(output.Trim(), typeof(ApiResponse<AnalyzeResult>), AppJsonContext.Default) as ApiResponse<AnalyzeResult>;
             
             Assert.NotNull(errorResult);
-            Assert.Contains("Game package not found", errorResult.error);
+            Assert.False(errorResult.success);
+            Assert.Contains("Game package not found", errorResult.error?.message);
         }
 
         [Fact]
-        public void LiveScanCommand_ReturnsValidJsonArray()
+        public void LiveListCommand_ReturnsValidJson()
         {
-            // Execute a live scan against the host's actual WGS environment
-            var (output, error, exitCode) = RunCli("scan --json");
+            // Execute a live list against the host's actual WGS environment
+            var (output, error, exitCode) = RunCli("list");
             
             Assert.Equal(0, exitCode);
 
-            // Verify it's valid JSON (array format)
+            // Verify it's valid JSON (object format now, since it's ApiResponse<T>)
             using (var jsonDoc = JsonDocument.Parse(output.Trim()))
             {
-                Assert.Equal(JsonValueKind.Array, jsonDoc.RootElement.ValueKind);
+                Assert.Equal(JsonValueKind.Object, jsonDoc.RootElement.ValueKind);
             }
         }
     }

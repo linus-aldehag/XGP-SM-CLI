@@ -19,8 +19,8 @@ namespace XgpSm.Cli.Handlers
                 
                 if (targetGame == null)
                 {
-                    Console.WriteLine(JsonSerializer.Serialize(new ErrorResult { error = "Game package not found" }, AppJsonContext.Default.ErrorResult));
-                    Environment.ExitCode = 1;
+                    Console.WriteLine(JsonSerializer.Serialize(new ApiResponse<ExtractResult> { success = false, error = new ErrorDetail { code = "ERROR", message = "Game package not found" } }, AppJsonContext.Default.ApiResponseExtractResult));
+
                     return;
                 }
 
@@ -29,20 +29,21 @@ namespace XgpSm.Cli.Handlers
 
                 if (targetContainer == null)
                 {
-                    Console.WriteLine(JsonSerializer.Serialize(new ErrorResult { error = "Container/XUID not found" }, AppJsonContext.Default.ErrorResult));
-                    Environment.ExitCode = 1;
+                    Console.WriteLine(JsonSerializer.Serialize(new ApiResponse<ExtractResult> { success = false, error = new ErrorDetail { code = "ERROR", message = "Container/XUID not found" } }, AppJsonContext.Default.ApiResponseExtractResult));
+
                     return;
                 }
 
                 int extracted = manager.Extract(targetGame, targetContainer);
 
-                Console.WriteLine(JsonSerializer.Serialize(new ExtractResult { success = true, filesExtracted = extracted }, AppJsonContext.Default.ExtractResult));
+                Console.WriteLine(JsonSerializer.Serialize(new ApiResponse<ExtractResult> { success = true, data = new ExtractResult { success = true, filesExtracted = extracted } }, AppJsonContext.Default.ApiResponseExtractResult));
             }
             catch (Exception ex)
             {
-                Console.WriteLine(JsonSerializer.Serialize(new ErrorResult { error = ex.Message }, AppJsonContext.Default.ErrorResult));
-                Environment.ExitCode = 1;
+                Console.WriteLine(JsonSerializer.Serialize(new ApiResponse<ExtractResult> { success = false, error = new ErrorDetail { code = "ERROR", message = ex.Message } }, AppJsonContext.Default.ApiResponseExtractResult));
+
             }
         }
     }
 }
+

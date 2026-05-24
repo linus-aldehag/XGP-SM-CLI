@@ -10,12 +10,7 @@ Never manually chase down container IDs, bounce commands back and forth, or ask 
 
 The CLI tool is located at:
 ```
-XgpSm.Cli/bin/Debug/net10.0/XgpSm.Cli.exe
-```
-
-Or when published:
-```
-bin/Release/net10.0/publish/win-x64/XgpSm.Cli.exe
+./xgpsm.exe
 ```
 
 Invoke it from PowerShell. The output is strictly machine-readable JSON.
@@ -52,5 +47,5 @@ Invoke it from PowerShell. The output is strictly machine-readable JSON.
 
 The full MCP tool schema for this project is defined at:
 ```
-AgenticSkills/mcp/xgpsm-tools.json
+./mcp/xgpsm-tools.json
 ```

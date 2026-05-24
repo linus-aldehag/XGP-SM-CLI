@@ -21,8 +21,8 @@ namespace XgpSm.Cli.Handlers
             
             if (targetGame == null)
             {
-                Console.WriteLine(JsonSerializer.Serialize(new ErrorResult { error = "Game package not found" }, AppJsonContext.Default.ErrorResult));
-                Environment.ExitCode = 1;
+                Console.WriteLine(JsonSerializer.Serialize(new ApiResponse<AnalyzeResult> { success = false, error = new ErrorDetail { code = "ERROR", message = "Game package not found" } }, AppJsonContext.Default.ApiResponseAnalyzeResult));
+
                 return;
             }
 
@@ -31,16 +31,16 @@ namespace XgpSm.Cli.Handlers
 
             if (targetContainer == null)
             {
-                Console.WriteLine(JsonSerializer.Serialize(new ErrorResult { error = "XUID container not found" }, AppJsonContext.Default.ErrorResult));
-                Environment.ExitCode = 1;
+                Console.WriteLine(JsonSerializer.Serialize(new ApiResponse<AnalyzeResult> { success = false, error = new ErrorDetail { code = "ERROR", message = "XUID container not found" } }, AppJsonContext.Default.ApiResponseAnalyzeResult));
+
                 return;
             }
 
             var entries = manager.GetSaveEntries(targetGame, targetContainer).ToList();
             if (!entries.Any())
             {
-                Console.WriteLine(JsonSerializer.Serialize(new ErrorResult { error = "No save entries found in container" }, AppJsonContext.Default.ErrorResult));
-                Environment.ExitCode = 1;
+                Console.WriteLine(JsonSerializer.Serialize(new ApiResponse<AnalyzeResult> { success = false, error = new ErrorDetail { code = "ERROR", message = "No save entries found in container" } }, AppJsonContext.Default.ApiResponseAnalyzeResult));
+
                 return;
             }
 
@@ -50,8 +50,8 @@ namespace XgpSm.Cli.Handlers
             
             if (fileInfo.Length == 0)
             {
-                Console.WriteLine(JsonSerializer.Serialize(new ErrorResult { error = "Largest file is 0 bytes" }, AppJsonContext.Default.ErrorResult));
-                Environment.ExitCode = 1;
+                Console.WriteLine(JsonSerializer.Serialize(new ApiResponse<AnalyzeResult> { success = false, error = new ErrorDetail { code = "ERROR", message = "Largest file is 0 bytes" } }, AppJsonContext.Default.ApiResponseAnalyzeResult));
+
                 return;
             }
 
@@ -88,13 +88,14 @@ namespace XgpSm.Cli.Handlers
                 guessedFormat = guess
             };
 
-            Console.WriteLine(JsonSerializer.Serialize(result, AppJsonContext.Default.AnalyzeResult));
+            Console.WriteLine(JsonSerializer.Serialize(new ApiResponse<AnalyzeResult> { success = true, data = result }, AppJsonContext.Default.ApiResponseAnalyzeResult));
             }
             catch (Exception ex)
             {
-                Console.WriteLine(JsonSerializer.Serialize(new ErrorResult { error = ex.Message }, AppJsonContext.Default.ErrorResult));
-                Environment.ExitCode = 1;
+                Console.WriteLine(JsonSerializer.Serialize(new ApiResponse<AnalyzeResult> { success = false, error = new ErrorDetail { code = "ERROR", message = ex.Message } }, AppJsonContext.Default.ApiResponseAnalyzeResult));
+
             }
         }
     }
 }
+
