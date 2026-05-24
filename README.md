@@ -83,14 +83,29 @@ xgpsm analyze --package <PackageName> --xuid <XUID>
 - **For `export`**: Specialized handlers automatically rename the raw Xbox chunks back into standard PC formats (e.g., `.sav`, `.dat`), making them compatible with Steam or Epic.
 - **For `import`**: Specialized handlers allow the CLI to correctly map incoming standard PC files to the obfuscated Xbox blobs they need to replace.
 
-## 🏗️ Build from Source
+## 📦 Installation & Release Structure
 
-Clone the repository and publish utilizing .NET 10 Native AOT for a standalone executable:
+XGP-SM is distributed as pre-compiled, self-contained zip packages using .NET 10 Native AOT. This means you do not need to install the .NET runtime or any dependencies to use it.
 
-```bash
-dotnet publish XgpSm.Cli/XgpSm.Cli.csproj \
-  -c Release \
-  -r win-x64 \
-  /p:PublishAot=true \
-  --output bin/Release/net10.0/publish/win-x64
+When you download the latest release zip, the folder structure looks like this:
+```text
+xgpsm-win-x64/
+├── mcp/                       # MCP (Model Context Protocol) tool definitions
+├── skills/                    # Native system-level AI skills/scripts
+├── AGENT_INSTRUCTIONS.md      # Recommended agent guidelines and best practices
+├── games.json                 # Core game database definitions
+├── README.md                  # This documentation file
+└── xgpsm.exe                  # The core deterministic CLI engine
 ```
+
+## 🤖 Bootstrapping into an AI Agent
+
+Since XGP-SM is designed specifically for AI orchestration, you can easily plug it into your AI agent of choice using the Model Context Protocol (MCP) definitions provided in the release package.
+
+1. **Extract the Release:** Unzip the package to a permanent directory on your machine (e.g., `C:\Tools\XGP-SM`).
+2. **Review Tool Schemas:** The `mcp/xgpsm-tools.json` file contains the complete system prompt configurations, input schemas, and expected JSON output envelopes for every CLI command.
+3. **Register the Tools:** 
+   - **For MCP-compatible Agents (e.g. Claude Desktop):** You can use an MCP CLI wrapper (like `mcp-cli` or similar) to expose `xgpsm.exe` commands directly to the agent using the JSON definitions.
+   - **For Custom Agents (LangChain, AutoGen, etc):** Directly parse `mcp/xgpsm-tools.json` to load the tool descriptions into your LLM's context. Instruct your agent to fulfill these tool calls by executing `xgpsm.exe <command>` via the system shell and parsing the JSON `stdout`.
+
+Because XGP-SM strictly returns consistent JSON envelopes for both successes and failures, your agent will be able to self-correct and autonomously navigate the local filesystem without human intervention.
