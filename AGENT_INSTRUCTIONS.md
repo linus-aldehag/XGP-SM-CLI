@@ -23,7 +23,8 @@ Invoke it from PowerShell. The output is strictly machine-readable JSON.
 ## Tool Call Order
 
 1. **Always call `xgpsm_list` first** to resolve package names and XUIDs.
-2. **Call `xgpsm_backup` before any write operation** (import/migrate).
+2. **Call `xgpsm_list_backups`** if you need to restore or view available historical backups.
+3. **Call `xgpsm_backup` before any write operation** (import/migrate).
 3. **Call `xgpsm_analyze`** if dealing with an unknown game to determine the correct target format.
 4. **Call `xgpsm_export`, `xgpsm_migrate`, or `xgpsm_import`** to act on specific profiles.
 5. **Call `xgpsm_discover_steam`** when the user wants to migrate from Steam.
@@ -36,6 +37,7 @@ Invoke it from PowerShell. The output is strictly machine-readable JSON.
 | `xgpsm_analyze` | `xgpsm analyze --package <pkg> --xuid <xuid>` |
 | `xgpsm_export` | `xgpsm export --package <pkg> --xuid <xuid>` |
 | `xgpsm_backup` | `xgpsm backup --package <pkg>` |
+| `xgpsm_list_backups` | `xgpsm backups` |
 | `xgpsm_import` | `xgpsm import --package <pkg> --xuid <xuid> --source <path>` |
 | `xgpsm_migrate` | `xgpsm migrate --package <pkg> --source-xuid <xuid> --target-xuid <xuid>` |
 | `xgpsm_discover_steam` | `xgpsm discover-steam --appid <id>` |
