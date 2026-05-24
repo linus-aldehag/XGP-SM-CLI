@@ -55,7 +55,6 @@ namespace XgpSaveTools
                 var blobPath = Path.Combine(containerFolder, $"container.{slot.ContainerNum}");
                 if (!File.Exists(blobPath))
                 {
-                    Console.WriteLine($"!! Missing container for slot {slot.Name1}");
                     continue;
                 }
                 var files = ReadContainerBlob(containerFolder, slot.ContainerNum);
@@ -82,6 +81,12 @@ namespace XgpSaveTools
             var sourceContainer = sourceDirs.FirstOrDefault(c => c.UserTag == sourceXuid || c.Dir.Contains(sourceXuid));
             
             if (sourceContainer == null) return string.Empty;
+
+            var targetContainer = sourceDirs.FirstOrDefault(c => c.UserTag == targetXuid || c.Dir.Contains(targetXuid));
+            if (targetContainer != null)
+            {
+                BackupFolder(gameInfo, targetContainer);
+            }
 
             var targetFolderName = Path.GetFileName(sourceContainer.Dir).Replace(sourceXuid, targetXuid);
             var targetDir = Path.Combine(baseDir, targetFolderName);
@@ -112,12 +117,10 @@ namespace XgpSaveTools
 
             if (otherFiles.Length == 1 && ExtensionIsNumeric(otherFiles[0].Extension)) // 1cn1f delete entire folder
             {
-                Console.WriteLine($"Removing {dir.FullName}");
                 dir.Delete(true);
             }
             else // delete only entry file
             {
-                Console.WriteLine($"Removing {file.FullName}");
                 file.Delete();
             }
         }
@@ -128,24 +131,15 @@ namespace XgpSaveTools
             var deletions = replacementsList.Where(x => x.ReplacementFile == null).ToList();
             var updates = replacementsList.Where(x => x.ReplacementFile != null).ToList();
 
-            Console.WriteLine("");
-            Console.WriteLine($"Backup created at {BackupFolder(info, userContainer)}");
-            Console.WriteLine("");
-
             foreach (var rep in deletions)
             {
                 HandleEntryDeletion(rep.TargetFile);
-                Console.WriteLine("");
             }
 
             foreach (var rep in updates)
             {
-                Console.WriteLine($"Replacing {rep.TargetFile.Path}");
                 File.Copy(rep.ReplacementFile!.FullName, rep.TargetFile.Path, overwrite: true);
-                Console.WriteLine("");
             }
-
-            Console.WriteLine("Operation completed.");
         }
 
         public int Extract(GameInfo info, UserContainerFolder userContainer)
@@ -157,27 +151,22 @@ namespace XgpSaveTools
                 var entries = GetSaveEntries(info, userContainer).ToList();
                 if (!entries.Any())
                 {
-                    Console.WriteLine($"No entries found for {userContainer.UserTag}");
                     return -1;
                 }
 
                 string zipName = GetZipName(info, userContainer);
                 using var zip = ZipFile.Open(zipName, ZipArchiveMode.Create);
 
-                Console.WriteLine($"Saving files for user {userContainer.UserTag}:");
                 foreach (var saveEntry in entries)
                 {
-                    Console.WriteLine($"  - {saveEntry.OutputName}");
                     zip.CreateEntryFromFile(saveEntry.ContainerEntry.Path, saveEntry.OutputName, CompressionLevel.Optimal);
                     result++;
                 }
 
-                Console.WriteLine($"Save files written to \"{zipName}\"\n");
                 return result;
             }
             catch
             {
-                Console.WriteLine("Extraction Failed");
                 throw;
             }
             finally
@@ -239,7 +228,6 @@ namespace XgpSaveTools
 
                 if (chosen == null || !File.Exists(chosen))
                 {
-                    Console.WriteLine($"!! Missing file blob for {fileName}");
                     continue;
                 }
 

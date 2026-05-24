@@ -10,18 +10,20 @@ using XgpSm.Cli.Models;
 
 namespace XgpSm.Cli.Handlers
 {
-    public static class ReplaceCommandHandler
+    public static class ImportCommandHandler
     {
-        public static void Handle(string package, string xuid, string source, bool json)
+        public static void Handle(string package, string xuid, string source)
         {
+            try
+            {
             var manager = new XboxContainerRepository();
             var games = GameList.DiscoverUserGames(GameList.ReadGameList());
             var targetGame = games.FirstOrDefault(g => g.Package == package);
             
             if (targetGame == null)
             {
-                if (json) Console.WriteLine(JsonSerializer.Serialize(new ErrorResult { error = "Game package not found" }, AppJsonContext.Default.ErrorResult));
-                else Console.WriteLine("Error: Game package not found");
+                Console.WriteLine(JsonSerializer.Serialize(new ErrorResult { error = "Game package not found" }, AppJsonContext.Default.ErrorResult));
+                Environment.ExitCode = 1;
                 return;
             }
 
@@ -30,15 +32,15 @@ namespace XgpSm.Cli.Handlers
 
             if (targetContainer == null)
             {
-                if (json) Console.WriteLine(JsonSerializer.Serialize(new ErrorResult { error = "Container/XUID not found" }, AppJsonContext.Default.ErrorResult));
-                else Console.WriteLine("Error: Container/XUID not found");
+                Console.WriteLine(JsonSerializer.Serialize(new ErrorResult { error = "Container/XUID not found" }, AppJsonContext.Default.ErrorResult));
+                Environment.ExitCode = 1;
                 return;
             }
 
             if (!System.IO.Directory.Exists(source))
             {
-                if (json) Console.WriteLine(JsonSerializer.Serialize(new ErrorResult { error = "Source directory not found" }, AppJsonContext.Default.ErrorResult));
-                else Console.WriteLine("Error: Source directory not found");
+                Console.WriteLine(JsonSerializer.Serialize(new ErrorResult { error = "Source directory not found" }, AppJsonContext.Default.ErrorResult));
+                Environment.ExitCode = 1;
                 return;
             }
 
@@ -67,13 +69,12 @@ namespace XgpSm.Cli.Handlers
 
             manager.ReplaceEntries(targetGame, targetContainer, replacements);
 
-            if (json)
-            {
-                Console.WriteLine(JsonSerializer.Serialize(new ReplaceResult { replaced = replaced, removed = removed }, AppJsonContext.Default.ReplaceResult));
+            Console.WriteLine(JsonSerializer.Serialize(new ReplaceResult { replaced = replaced, removed = removed }, AppJsonContext.Default.ReplaceResult));
             }
-            else
+            catch (Exception ex)
             {
-                Console.WriteLine($"Replace complete. Replaced: {replaced}, Removed: {removed}");
+                Console.WriteLine(JsonSerializer.Serialize(new ErrorResult { error = ex.Message }, AppJsonContext.Default.ErrorResult));
+                Environment.ExitCode = 1;
             }
         }
     }

@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Linq;
 using System.Text.Json;
 using XgpSaveTools;
@@ -7,9 +8,9 @@ using XgpSm.Cli.Models;
 
 namespace XgpSm.Cli.Handlers
 {
-    public static class BackupCommandHandler
+    public static class MigrateCommandHandler
     {
-        public static void Handle(string package, string xuid)
+        public static void Handle(string package, string sourceXuid, string targetXuid)
         {
             try
             {
@@ -24,19 +25,16 @@ namespace XgpSm.Cli.Handlers
                 return;
             }
 
-            var containers = manager.FindUserContainers(targetGame.Package);
-            var targetContainer = containers.FirstOrDefault(c => c.UserTag == xuid || c.Dir.Contains(xuid));
+            string resultPath = manager.TransferFolder(targetGame, sourceXuid, targetXuid);
 
-            if (targetContainer == null)
+            if (string.IsNullOrEmpty(resultPath))
             {
-                Console.WriteLine(JsonSerializer.Serialize(new ErrorResult { error = "Container/XUID not found" }, AppJsonContext.Default.ErrorResult));
+                Console.WriteLine(JsonSerializer.Serialize(new ErrorResult { error = "Transfer failed or source not found" }, AppJsonContext.Default.ErrorResult));
                 Environment.ExitCode = 1;
                 return;
             }
 
-            string backupPath = manager.BackupFolder(targetGame, targetContainer);
-
-            Console.WriteLine(JsonSerializer.Serialize(new BackupResult { backupPath = backupPath }, AppJsonContext.Default.BackupResult));
+            Console.WriteLine(JsonSerializer.Serialize(new TransferResult { success = true, targetPath = resultPath }, AppJsonContext.Default.TransferResult));
             }
             catch (Exception ex)
             {

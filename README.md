@@ -34,48 +34,47 @@ XGP-SM is intended to be called headlessly by automation scripts or AI agents.
 Discover installed XGP titles and enumerate user profile footprints.
 
 ```bash
-xgpsm scan --json
+xgpsm list
 ```
 
 ### Export Save Data
 Target a specific user profile and export all raw save chunks into a zip file formatted for PC storefronts (Steam/Epic).
 
 ```bash
-xgpsm export --package <PackageName> --xuid <XUID> --json
+xgpsm export --package <PackageName> --xuid <XUID>
 ```
 
 ### Backup Profile Data
 Create a safe, timestamped backup cache of a profile's WGS save folder before attempting any modifications.
 
 ```bash
-xgpsm backup --package <PackageName> --xuid <XUID> --json
+xgpsm backup --package <PackageName> --xuid <XUID>
 ```
 
 ### Replace/Inject Save Data
 Inject foreign saves (e.g. from Steam) securely into the local WGS container, mapping and replacing active binaries automatically.
 
 ```bash
-xgpsm replace --package <PackageName> --xuid <XUID> --source <PathToSourceSaves> --json
+xgpsm import --package <PackageName> --xuid <XUID> --source <PathToSourceSaves>
 ```
 
 ### Cross-Profile Save Transfer
 Move save game data between different Xbox profiles on the same disk. This direct container migration perfectly handles overwriting an existing profile's directories, or populating a completely empty new profile, without needing to perform complex extraction mapping.
 
 ```bash
-xgpsm transfer --package <PackageName> --source-xuid <SourceXUID> --target-xuid <TargetXUID> --json
+xgpsm migrate --package <PackageName> --source-xuid <SourceXUID> --target-xuid <TargetXUID>
 ```
 
 ### Forensic Magic-Byte Analysis
 Read the raw file headers of the Xbox save chunks to heuristically determine the native game engine or file format without relying on external wikis.
 
 ```bash
-xgpsm analyze --package <PackageName> --xuid <XUID> --json
+xgpsm analyze --package <PackageName> --xuid <XUID>
 ```
 
 ## 🧩 The Role of Specialized Handlers
-The built-in `GenericHandler` simply outputs the raw filename stored in the WGS container. While this is sufficient for `scan` and `transfer` (which operate on raw UWP directories), **specialized handlers are highly recommended for `export` and `replace` operations**.
 - **For `export`**: Specialized handlers automatically rename the raw Xbox chunks back into standard PC formats (e.g., `.sav`, `.dat`), making them compatible with Steam or Epic.
-- **For `replace`**: Specialized handlers allow the CLI to correctly map incoming standard PC files to the obfuscated Xbox blobs they need to replace.
+- **For `import`**: Specialized handlers allow the CLI to correctly map incoming standard PC files to the obfuscated Xbox blobs they need to replace.
 
 ## 🏗️ Build from Source
 
