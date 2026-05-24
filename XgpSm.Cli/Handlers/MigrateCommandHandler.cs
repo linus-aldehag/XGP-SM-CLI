@@ -20,8 +20,8 @@ namespace XgpSm.Cli.Handlers
             
             if (targetGame == null)
             {
-                Console.WriteLine(JsonSerializer.Serialize(new ErrorResult { error = "Game package not found" }, AppJsonContext.Default.ErrorResult));
-                Environment.ExitCode = 1;
+                Console.WriteLine(JsonSerializer.Serialize(new ApiResponse<TransferResult> { success = false, error = new ErrorDetail { code = "ERROR", message = "Game package not found" } }, AppJsonContext.Default.ApiResponseTransferResult));
+
                 return;
             }
 
@@ -29,18 +29,19 @@ namespace XgpSm.Cli.Handlers
 
             if (string.IsNullOrEmpty(resultPath))
             {
-                Console.WriteLine(JsonSerializer.Serialize(new ErrorResult { error = "Transfer failed or source not found" }, AppJsonContext.Default.ErrorResult));
-                Environment.ExitCode = 1;
+                Console.WriteLine(JsonSerializer.Serialize(new ApiResponse<TransferResult> { success = false, error = new ErrorDetail { code = "ERROR", message = "Transfer failed or source not found" } }, AppJsonContext.Default.ApiResponseTransferResult));
+
                 return;
             }
 
-            Console.WriteLine(JsonSerializer.Serialize(new TransferResult { success = true, targetPath = resultPath }, AppJsonContext.Default.TransferResult));
+            Console.WriteLine(JsonSerializer.Serialize(new ApiResponse<TransferResult> { success = true, data = new TransferResult { success = true, targetPath = resultPath } }, AppJsonContext.Default.ApiResponseTransferResult));
             }
             catch (Exception ex)
             {
-                Console.WriteLine(JsonSerializer.Serialize(new ErrorResult { error = ex.Message }, AppJsonContext.Default.ErrorResult));
-                Environment.ExitCode = 1;
+                Console.WriteLine(JsonSerializer.Serialize(new ApiResponse<TransferResult> { success = false, error = new ErrorDetail { code = "ERROR", message = ex.Message } }, AppJsonContext.Default.ApiResponseTransferResult));
+
             }
         }
     }
 }
+

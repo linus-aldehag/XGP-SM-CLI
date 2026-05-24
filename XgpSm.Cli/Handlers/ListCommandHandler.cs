@@ -72,13 +72,14 @@ namespace XgpSm.Cli.Handlers
                 }
             }
 
-                Console.WriteLine(JsonSerializer.Serialize(scannedGames, typeof(IEnumerable<ScannedGame>), new AppJsonContext(new JsonSerializerOptions { WriteIndented = true })));
+                Console.WriteLine(JsonSerializer.Serialize(new ApiResponse<IEnumerable<ScannedGame>> { success = true, data = scannedGames }, typeof(ApiResponse<IEnumerable<ScannedGame>>), new AppJsonContext(new JsonSerializerOptions { WriteIndented = true })));
             }
             catch (Exception ex)
             {
-                Console.WriteLine(JsonSerializer.Serialize(new ErrorResult { error = ex.Message }, AppJsonContext.Default.ErrorResult));
-                Environment.ExitCode = 1;
+                Console.WriteLine(JsonSerializer.Serialize(new ApiResponse<IEnumerable<ScannedGame>> { success = false, error = new ErrorDetail { code = "ERROR", message = ex.Message } }, typeof(ApiResponse<IEnumerable<ScannedGame>>), AppJsonContext.Default));
+
             }
         }
     }
 }
+

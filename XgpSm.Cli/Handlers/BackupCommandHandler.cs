@@ -19,8 +19,8 @@ namespace XgpSm.Cli.Handlers
             
             if (targetGame == null)
             {
-                Console.WriteLine(JsonSerializer.Serialize(new ErrorResult { error = "Game package not found" }, AppJsonContext.Default.ErrorResult));
-                Environment.ExitCode = 1;
+                Console.WriteLine(JsonSerializer.Serialize(new ApiResponse<BackupResult> { success = false, error = new ErrorDetail { code = "ERROR", message = "Game package not found" } }, AppJsonContext.Default.ApiResponseBackupResult));
+
                 return;
             }
 
@@ -29,20 +29,21 @@ namespace XgpSm.Cli.Handlers
 
             if (targetContainer == null)
             {
-                Console.WriteLine(JsonSerializer.Serialize(new ErrorResult { error = "Container/XUID not found" }, AppJsonContext.Default.ErrorResult));
-                Environment.ExitCode = 1;
+                Console.WriteLine(JsonSerializer.Serialize(new ApiResponse<BackupResult> { success = false, error = new ErrorDetail { code = "ERROR", message = "Container/XUID not found" } }, AppJsonContext.Default.ApiResponseBackupResult));
+
                 return;
             }
 
             string backupPath = manager.BackupFolder(targetGame, targetContainer);
 
-            Console.WriteLine(JsonSerializer.Serialize(new BackupResult { backupPath = backupPath }, AppJsonContext.Default.BackupResult));
+            Console.WriteLine(JsonSerializer.Serialize(new ApiResponse<BackupResult> { success = true, data = new BackupResult { backupPath = backupPath } }, AppJsonContext.Default.ApiResponseBackupResult));
             }
             catch (Exception ex)
             {
-                Console.WriteLine(JsonSerializer.Serialize(new ErrorResult { error = ex.Message }, AppJsonContext.Default.ErrorResult));
-                Environment.ExitCode = 1;
+                Console.WriteLine(JsonSerializer.Serialize(new ApiResponse<BackupResult> { success = false, error = new ErrorDetail { code = "ERROR", message = ex.Message } }, AppJsonContext.Default.ApiResponseBackupResult));
+
             }
         }
     }
 }
+

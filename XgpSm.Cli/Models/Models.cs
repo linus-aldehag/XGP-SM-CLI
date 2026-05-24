@@ -5,18 +5,31 @@ using XgpSaveTools.Records;
 
 namespace XgpSm.Cli.Models
 {
-    [JsonSerializable(typeof(IEnumerable<GameInfo>))]
-    [JsonSerializable(typeof(IEnumerable<ScannedGame>))]
-    [JsonSerializable(typeof(ExtractResult))]
-    [JsonSerializable(typeof(ErrorResult))]
-    [JsonSerializable(typeof(BackupResult))]
-    [JsonSerializable(typeof(ReplaceResult))]
+    [JsonSerializable(typeof(ApiResponse<IEnumerable<GameInfo>>))]
+    [JsonSerializable(typeof(ApiResponse<IEnumerable<ScannedGame>>))]
+    [JsonSerializable(typeof(ApiResponse<ExtractResult>))]
+    [JsonSerializable(typeof(ApiResponse<BackupResult>))]
+    [JsonSerializable(typeof(ApiResponse<ReplaceResult>))]
+    [JsonSerializable(typeof(ApiResponse<TransferResult>))]
+    [JsonSerializable(typeof(ApiResponse<AnalyzeResult>))]
+    [JsonSerializable(typeof(ApiResponse<IEnumerable<BackupInfo>>))]
     [JsonSerializable(typeof(PlayerDbResponse))]
-    [JsonSerializable(typeof(TransferResult))]
-    [JsonSerializable(typeof(AnalyzeResult))]
-    [JsonSerializable(typeof(IEnumerable<BackupInfo>))]
     public partial class AppJsonContext : JsonSerializerContext
     {
+    }
+
+    public class ApiResponse<T>
+    {
+        public bool success { get; set; }
+        public T? data { get; set; }
+        public ErrorDetail? error { get; set; }
+    }
+
+    public class ErrorDetail
+    {
+        public string code { get; set; } = string.Empty;
+        public string message { get; set; } = string.Empty;
+        public string suggestedAction { get; set; } = string.Empty;
     }
 
     public class ScannedGame

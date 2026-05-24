@@ -22,8 +22,8 @@ namespace XgpSm.Cli.Handlers
             
             if (targetGame == null)
             {
-                Console.WriteLine(JsonSerializer.Serialize(new ErrorResult { error = "Game package not found" }, AppJsonContext.Default.ErrorResult));
-                Environment.ExitCode = 1;
+                Console.WriteLine(JsonSerializer.Serialize(new ApiResponse<ReplaceResult> { success = false, error = new ErrorDetail { code = "ERROR", message = "Game package not found" } }, AppJsonContext.Default.ApiResponseReplaceResult));
+
                 return;
             }
 
@@ -32,15 +32,15 @@ namespace XgpSm.Cli.Handlers
 
             if (targetContainer == null)
             {
-                Console.WriteLine(JsonSerializer.Serialize(new ErrorResult { error = "Container/XUID not found" }, AppJsonContext.Default.ErrorResult));
-                Environment.ExitCode = 1;
+                Console.WriteLine(JsonSerializer.Serialize(new ApiResponse<ReplaceResult> { success = false, error = new ErrorDetail { code = "ERROR", message = "Container/XUID not found" } }, AppJsonContext.Default.ApiResponseReplaceResult));
+
                 return;
             }
 
             if (!System.IO.Directory.Exists(source))
             {
-                Console.WriteLine(JsonSerializer.Serialize(new ErrorResult { error = "Source directory not found" }, AppJsonContext.Default.ErrorResult));
-                Environment.ExitCode = 1;
+                Console.WriteLine(JsonSerializer.Serialize(new ApiResponse<ReplaceResult> { success = false, error = new ErrorDetail { code = "ERROR", message = "Source directory not found" } }, AppJsonContext.Default.ApiResponseReplaceResult));
+
                 return;
             }
 
@@ -69,13 +69,14 @@ namespace XgpSm.Cli.Handlers
 
             manager.ReplaceEntries(targetGame, targetContainer, replacements);
 
-            Console.WriteLine(JsonSerializer.Serialize(new ReplaceResult { replaced = replaced, removed = removed }, AppJsonContext.Default.ReplaceResult));
+            Console.WriteLine(JsonSerializer.Serialize(new ApiResponse<ReplaceResult> { success = true, data = new ReplaceResult { replaced = replaced, removed = removed } }, AppJsonContext.Default.ApiResponseReplaceResult));
             }
             catch (Exception ex)
             {
-                Console.WriteLine(JsonSerializer.Serialize(new ErrorResult { error = ex.Message }, AppJsonContext.Default.ErrorResult));
-                Environment.ExitCode = 1;
+                Console.WriteLine(JsonSerializer.Serialize(new ApiResponse<ReplaceResult> { success = false, error = new ErrorDetail { code = "ERROR", message = ex.Message } }, AppJsonContext.Default.ApiResponseReplaceResult));
+
             }
         }
     }
 }
+

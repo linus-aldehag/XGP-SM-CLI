@@ -46,13 +46,14 @@ namespace XgpSm.Cli.Handlers
                     }
                 }
 
-                Console.WriteLine(JsonSerializer.Serialize(backups, typeof(IEnumerable<BackupInfo>), new AppJsonContext(new JsonSerializerOptions { WriteIndented = true })));
+                Console.WriteLine(JsonSerializer.Serialize(new ApiResponse<IEnumerable<BackupInfo>> { success = true, data = backups }, typeof(ApiResponse<IEnumerable<BackupInfo>>), new AppJsonContext(new JsonSerializerOptions { WriteIndented = true })));
             }
             catch (Exception ex)
             {
-                Console.WriteLine(JsonSerializer.Serialize(new ErrorResult { error = ex.Message }, AppJsonContext.Default.ErrorResult));
-                Environment.ExitCode = 1;
+                Console.WriteLine(JsonSerializer.Serialize(new ApiResponse<IEnumerable<BackupInfo>> { success = false, error = new ErrorDetail { code = "ERROR", message = ex.Message } }, typeof(ApiResponse<IEnumerable<BackupInfo>>), AppJsonContext.Default));
+
             }
         }
     }
 }
+
