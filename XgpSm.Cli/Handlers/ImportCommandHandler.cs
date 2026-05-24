@@ -22,7 +22,7 @@ namespace XgpSm.Cli.Handlers
             
             if (targetGame == null)
             {
-                Console.WriteLine(JsonSerializer.Serialize(new ApiResponse<ReplaceResult> { success = false, error = new ErrorDetail { code = "ERROR", message = "Game package not found" } }, AppJsonContext.Default.ApiResponseReplaceResult));
+                Console.WriteLine(JsonSerializer.Serialize(new ApiResponse<ReplaceResult> { success = false, error = new ErrorDetail { code = "GAME_NOT_FOUND", message = "Game package not found" } }, AppJsonContext.Default.ApiResponseReplaceResult));
 
                 return;
             }
@@ -32,14 +32,14 @@ namespace XgpSm.Cli.Handlers
 
             if (targetContainer == null)
             {
-                Console.WriteLine(JsonSerializer.Serialize(new ApiResponse<ReplaceResult> { success = false, error = new ErrorDetail { code = "ERROR", message = "Container/XUID not found" } }, AppJsonContext.Default.ApiResponseReplaceResult));
+                Console.WriteLine(JsonSerializer.Serialize(new ApiResponse<ReplaceResult> { success = false, error = new ErrorDetail { code = "CONTAINER_NOT_FOUND", message = "Container/XUID not found" } }, AppJsonContext.Default.ApiResponseReplaceResult));
 
                 return;
             }
 
             if (!System.IO.Directory.Exists(source))
             {
-                Console.WriteLine(JsonSerializer.Serialize(new ApiResponse<ReplaceResult> { success = false, error = new ErrorDetail { code = "ERROR", message = "Source directory not found" } }, AppJsonContext.Default.ApiResponseReplaceResult));
+                Console.WriteLine(JsonSerializer.Serialize(new ApiResponse<ReplaceResult> { success = false, error = new ErrorDetail { code = "SOURCE_NOT_FOUND", message = "Source directory not found" } }, AppJsonContext.Default.ApiResponseReplaceResult));
 
                 return;
             }
@@ -50,6 +50,8 @@ namespace XgpSm.Cli.Handlers
             var replacements = new List<EntryReplacement>();
             int replaced = 0;
             int removed = 0;
+            var wouldReplace = new List<string>();
+            var wouldRemove = new List<string>();
 
             foreach (var entry in entries)
             {
@@ -59,11 +61,13 @@ namespace XgpSm.Cli.Handlers
                 {
                     replacements.Add(new EntryReplacement(entry.ContainerEntry, new FileInfo(matchingSource)));
                     replaced++;
+                    wouldReplace.Add(entry.OutputName ?? string.Empty);
                 }
                 else
                 {
                     replacements.Add(new EntryReplacement(entry.ContainerEntry, null));
                     removed++;
+                    wouldRemove.Add(entry.OutputName ?? string.Empty);
                 }
             }
 
@@ -72,11 +76,11 @@ namespace XgpSm.Cli.Handlers
                 manager.ReplaceEntries(targetGame, targetContainer, replacements);
             }
 
-            Console.WriteLine(JsonSerializer.Serialize(new ApiResponse<ReplaceResult> { success = true, data = new ReplaceResult { replaced = replaced, removed = removed } }, AppJsonContext.Default.ApiResponseReplaceResult));
+            Console.WriteLine(JsonSerializer.Serialize(new ApiResponse<ReplaceResult> { success = true, data = new ReplaceResult { dryRun = dryRun, replaced = replaced, removed = removed, wouldReplace = wouldReplace, wouldRemove = wouldRemove } }, AppJsonContext.Default.ApiResponseReplaceResult));
             }
             catch (Exception ex)
             {
-                Console.WriteLine(JsonSerializer.Serialize(new ApiResponse<ReplaceResult> { success = false, error = new ErrorDetail { code = "ERROR", message = ex.Message } }, AppJsonContext.Default.ApiResponseReplaceResult));
+                Console.WriteLine(JsonSerializer.Serialize(new ApiResponse<ReplaceResult> { success = false, error = new ErrorDetail { code = "IMPORT_FAILED", message = ex.Message } }, AppJsonContext.Default.ApiResponseReplaceResult));
 
             }
         }

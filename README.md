@@ -1,6 +1,6 @@
 # 🤖 XGP-SM (Agentic Xbox Game Pass Save Manager)
 
-A .NET 10 CLI utility designed to seamlessly enumerate, extract, move, and hot-swap local Xbox Game Pass (UWP/WGS) save data across multiple user profiles and alternative PC storefronts (Steam/Epic).
+A .NET 10 CLI utility designed to seamlessly enumerate, extract, move, and hot-swap local Xbox Game Pass (UWP/WGS) save data across multiple user profiles.
 
 XGP-SM is specifically built as a **headless, deterministic core engine** designed to be orchestrated by Agentic AI models. Rather than relying on a traditional interactive terminal, XGP-SM outputs strict, machine-readable JSON payloads, allowing AI agents to read local save structures, resolve external paths, and migrate saves across local profiles.
 
@@ -33,49 +33,49 @@ XGP-SM is intended to be called headlessly by automation scripts or AI agents.
 ### Scan Local Profiles
 Discover installed XGP titles and enumerate user profile footprints.
 
-```bash
+```text
 xgpsm list
 ```
 
 ### Export Save Data (Best-Effort)
 Target a specific user profile and extract all raw save chunks into an output folder. *Note: Formatting these chunks for other storefronts is handler-dependent and provided on a best-effort basis.*
 
-```bash
+```text
 xgpsm export --package <PackageName> --xuid <XUID>
 ```
 
 ### Backup Profile Data
 Create a safe, timestamped backup cache of a profile's WGS save folder before attempting any modifications.
 
-```bash
+```text
 xgpsm backup --package <PackageName> --xuid <XUID>
 ```
 
 ### List Backups
 List all available timestamped profile backups created by the tool.
 
-```bash
+```text
 xgpsm backups
 ```
 
 ### Replace/Inject Save Data (Best-Effort)
 Inject foreign saves securely into the local WGS container, mapping and replacing active binaries. *Note: Matching foreign saves to WGS containers is handler-dependent and provided on a best-effort basis.*
 
-```bash
+```text
 xgpsm import --package <PackageName> --xuid <XUID> --source <PathToSourceSaves>
 ```
 
 ### Cross-Profile Save Transfer
 Move save game data between different Xbox profiles on the same disk. This direct container migration perfectly handles overwriting an existing profile's directories, or populating a completely empty new profile, without needing to perform complex extraction mapping.
 
-```bash
+```text
 xgpsm migrate --package <PackageName> --source-xuid <SourceXUID> --target-xuid <TargetXUID>
 ```
 
 ### Forensic Magic-Byte Analysis
 Read the raw file headers of the Xbox save chunks to heuristically determine the native game engine or file format without relying on external wikis.
 
-```bash
+```text
 xgpsm analyze --package <PackageName> --xuid <XUID>
 ```
 

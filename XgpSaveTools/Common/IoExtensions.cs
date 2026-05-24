@@ -1,11 +1,10 @@
-﻿namespace XgpSaveTools.Extensions
+namespace XgpSaveTools.Extensions
 {
     public static class IoExtensions
     {
         // Directories
         public static readonly string PackagesRoot = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Packages");
 
-        public static readonly string GameListPath = Path.Combine(AppContext.BaseDirectory, "games.json");
         public static readonly string BackupOutput = Path.Combine(AppContext.BaseDirectory, "Backups");
 
         private static readonly object _lock = new();
