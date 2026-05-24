@@ -12,7 +12,7 @@ namespace XgpSm.Cli.Handlers
 {
     public static class ImportCommandHandler
     {
-        public static void Handle(string package, string xuid, string source)
+        public static void Handle(string package, string xuid, string source, bool dryRun = false)
         {
             try
             {
@@ -67,7 +67,10 @@ namespace XgpSm.Cli.Handlers
                 }
             }
 
-            manager.ReplaceEntries(targetGame, targetContainer, replacements);
+            if (!dryRun)
+            {
+                manager.ReplaceEntries(targetGame, targetContainer, replacements);
+            }
 
             Console.WriteLine(JsonSerializer.Serialize(new ApiResponse<ReplaceResult> { success = true, data = new ReplaceResult { replaced = replaced, removed = removed } }, AppJsonContext.Default.ApiResponseReplaceResult));
             }

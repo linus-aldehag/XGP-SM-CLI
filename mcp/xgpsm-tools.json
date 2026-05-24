@@ -65,12 +65,46 @@
                                                              "source_path":  {
                                                                                  "type":  "string",
                                                                                  "description":  "Absolute path to the file or folder containing the replacement save data (e.g. a Steam save directory or extracted .sav file)."
-                                                                             }
+                                                                             },
+                                                             "dry_run":  {
+                                                                             "type":  "boolean",
+                                                                             "description":  "If true, previews the changes without modifying or deleting any files. Highly recommended before executing a real import."
+                                                                         }
                                                          },
                                           "required":  [
                                                            "package",
                                                            "xuid",
                                                            "source_path"
+                                                       ]
+                                      }
+                  },
+                  {
+                      "name":  "xgpsm_migrate",
+                      "description":  "Copies full directory structures between Xbox profiles on disk. This handles overwriting an existing profile's directories or populating a completely empty new profile without complex extraction. Return JSON Format: { \"success\": true, \"data\": { \"success\": true, \"targetPath\": \"C:\\\\target\" } } OR { \"success\": false, \"error\": { \"code\": \"ERROR_CODE\", \"message\": \"msg\" } }",
+                      "inputSchema":  {
+                                          "type":  "object",
+                                          "properties":  {
+                                                             "package":  {
+                                                                             "type":  "string",
+                                                                             "description":  "The full UWP package name of the game."
+                                                                         },
+                                                             "source_xuid":  {
+                                                                                 "type":  "string",
+                                                                                 "description":  "Source user XUID to transfer from."
+                                                                             },
+                                                             "target_xuid":  {
+                                                                                 "type":  "string",
+                                                                                 "description":  "Target user XUID to transfer to."
+                                                                             },
+                                                             "dry_run":  {
+                                                                             "type":  "boolean",
+                                                                             "description":  "If true, previews the migration path without copying any files."
+                                                                         }
+                                                         },
+                                          "required":  [
+                                                           "package",
+                                                           "source_xuid",
+                                                           "target_xuid"
                                                        ]
                                       }
                   },
