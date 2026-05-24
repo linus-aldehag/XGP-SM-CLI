@@ -11,12 +11,14 @@ using XgpSm.Cli.Models;
 
 namespace XgpSm.Cli.Handlers
 {
-    public static class ScanCommandHandler
+    public static class ListCommandHandler
     {
         private static readonly HttpClient _httpClient = new HttpClient { Timeout = TimeSpan.FromSeconds(5) };
 
-        public static async Task HandleAsync(bool json)
+        public static async Task HandleAsync()
         {
+            try
+            {
             var manager = new XboxContainerRepository();
             var games = GameList.DiscoverUserGames(GameList.ReadGameList()).ToList();
             var scannedGames = new List<ScannedGame>();
@@ -70,20 +72,12 @@ namespace XgpSm.Cli.Handlers
                 }
             }
 
-            if (json)
-            {
                 Console.WriteLine(JsonSerializer.Serialize(scannedGames, typeof(IEnumerable<ScannedGame>), new AppJsonContext(new JsonSerializerOptions { WriteIndented = true })));
             }
-            else
+            catch (Exception ex)
             {
-                foreach (var game in scannedGames)
-                {
-                    Console.WriteLine($"- {game.name} (Package: {game.package})");
-                    foreach (var profile in game.profiles)
-                    {
-                        Console.WriteLine($"  - Profile: {profile.xuid} ({profile.username}), Size: {profile.saveSize} bytes, Last Played: {profile.lastPlayed}");
-                    }
-                }
+                Console.WriteLine(JsonSerializer.Serialize(new ErrorResult { error = ex.Message }, AppJsonContext.Default.ErrorResult));
+                Environment.ExitCode = 1;
             }
         }
     }

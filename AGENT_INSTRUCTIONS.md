@@ -18,27 +18,27 @@ Or when published:
 bin/Release/net10.0/publish/win-x64/XgpSm.Cli.exe
 ```
 
-Invoke it from PowerShell. Always pass `--json` for machine-readable output.
+Invoke it from PowerShell. The output is strictly machine-readable JSON.
 
 ## Tool Call Order
 
-1. **Always call `xgpsm_scan` first** to resolve package names and XUIDs.
-2. **Call `xgpsm_backup` before any write operation** (replace/inject/transfer).
+1. **Always call `xgpsm_list` first** to resolve package names and XUIDs.
+2. **Call `xgpsm_backup` before any write operation** (import/migrate).
 3. **Call `xgpsm_analyze`** if dealing with an unknown game to determine the correct target format.
-4. **Call `xgpsm_export`, `xgpsm_transfer`, or `xgpsm_replace`** to act on specific profiles.
+4. **Call `xgpsm_export`, `xgpsm_migrate`, or `xgpsm_import`** to act on specific profiles.
 5. **Call `xgpsm_discover_steam`** when the user wants to migrate from Steam.
 
 ## Shell Command Mappings
 
 | Skill Tool | Shell Command |
 |---|---|
-| `xgpsm_scan` | `xgpsm scan --json` |
-| `xgpsm_analyze` | `xgpsm analyze --package <pkg> --xuid <xuid> --json` |
-| `xgpsm_export` | `xgpsm export --package <pkg> --xuid <xuid> --json` |
-| `xgpsm_backup` | `xgpsm backup --package <pkg> --json` |
-| `xgpsm_replace` | `xgpsm replace --package <pkg> --xuid <xuid> --source <path> --json` |
-| `xgpsm_transfer` | `xgpsm transfer --package <pkg> --source-xuid <xuid> --target-xuid <xuid> --json` |
-| `xgpsm_discover_steam` | `xgpsm discover-steam --appid <id> --json` |
+| `xgpsm_list` | `xgpsm list` |
+| `xgpsm_analyze` | `xgpsm analyze --package <pkg> --xuid <xuid>` |
+| `xgpsm_export` | `xgpsm export --package <pkg> --xuid <xuid>` |
+| `xgpsm_backup` | `xgpsm backup --package <pkg>` |
+| `xgpsm_import` | `xgpsm import --package <pkg> --xuid <xuid> --source <path>` |
+| `xgpsm_migrate` | `xgpsm migrate --package <pkg> --source-xuid <xuid> --target-xuid <xuid>` |
+| `xgpsm_discover_steam` | `xgpsm discover-steam --appid <id>` |
 
 ## Safety Rules
 

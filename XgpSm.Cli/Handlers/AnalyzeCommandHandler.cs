@@ -11,16 +11,18 @@ namespace XgpSm.Cli.Handlers
 {
     public static class AnalyzeCommandHandler
     {
-        public static void Handle(string package, string xuid, bool json)
+        public static void Handle(string package, string xuid)
         {
+            try
+            {
             var manager = new XboxContainerRepository();
             var games = GameList.DiscoverUserGames(GameList.ReadGameList());
             var targetGame = games.FirstOrDefault(g => g.Package == package);
             
             if (targetGame == null)
             {
-                if (json) Console.WriteLine(JsonSerializer.Serialize(new ErrorResult { error = "Game package not found" }, AppJsonContext.Default.ErrorResult));
-                else Console.WriteLine("Error: Game package not found");
+                Console.WriteLine(JsonSerializer.Serialize(new ErrorResult { error = "Game package not found" }, AppJsonContext.Default.ErrorResult));
+                Environment.ExitCode = 1;
                 return;
             }
 
@@ -29,16 +31,16 @@ namespace XgpSm.Cli.Handlers
 
             if (targetContainer == null)
             {
-                if (json) Console.WriteLine(JsonSerializer.Serialize(new ErrorResult { error = "XUID container not found" }, AppJsonContext.Default.ErrorResult));
-                else Console.WriteLine("Error: XUID container not found");
+                Console.WriteLine(JsonSerializer.Serialize(new ErrorResult { error = "XUID container not found" }, AppJsonContext.Default.ErrorResult));
+                Environment.ExitCode = 1;
                 return;
             }
 
             var entries = manager.GetSaveEntries(targetGame, targetContainer).ToList();
             if (!entries.Any())
             {
-                if (json) Console.WriteLine(JsonSerializer.Serialize(new ErrorResult { error = "No save entries found in container" }, AppJsonContext.Default.ErrorResult));
-                else Console.WriteLine("Error: No save entries found in container");
+                Console.WriteLine(JsonSerializer.Serialize(new ErrorResult { error = "No save entries found in container" }, AppJsonContext.Default.ErrorResult));
+                Environment.ExitCode = 1;
                 return;
             }
 
@@ -48,8 +50,8 @@ namespace XgpSm.Cli.Handlers
             
             if (fileInfo.Length == 0)
             {
-                if (json) Console.WriteLine(JsonSerializer.Serialize(new ErrorResult { error = "Largest file is 0 bytes" }, AppJsonContext.Default.ErrorResult));
-                else Console.WriteLine("Error: Largest file is 0 bytes");
+                Console.WriteLine(JsonSerializer.Serialize(new ErrorResult { error = "Largest file is 0 bytes" }, AppJsonContext.Default.ErrorResult));
+                Environment.ExitCode = 1;
                 return;
             }
 
@@ -86,17 +88,12 @@ namespace XgpSm.Cli.Handlers
                 guessedFormat = guess
             };
 
-            if (json)
-            {
-                Console.WriteLine(JsonSerializer.Serialize(result, AppJsonContext.Default.AnalyzeResult));
+            Console.WriteLine(JsonSerializer.Serialize(result, AppJsonContext.Default.AnalyzeResult));
             }
-            else
+            catch (Exception ex)
             {
-                Console.WriteLine($"Largest File: {result.largestFileId}");
-                Console.WriteLine($"Size: {result.sizeBytes} bytes");
-                Console.WriteLine($"Magic Bytes (Hex):   {result.magicBytesHex}");
-                Console.WriteLine($"Magic Bytes (ASCII): {result.magicBytesAscii}");
-                Console.WriteLine($"Guessed Format:      {result.guessedFormat}");
+                Console.WriteLine(JsonSerializer.Serialize(new ErrorResult { error = ex.Message }, AppJsonContext.Default.ErrorResult));
+                Environment.ExitCode = 1;
             }
         }
     }

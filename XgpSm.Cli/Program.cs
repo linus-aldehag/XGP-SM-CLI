@@ -10,16 +10,9 @@ namespace XgpSm.Cli
         {
             var rootCommand = new RootCommand("Xbox Game Pass Save Manager (XGP-SM) deterministic CLI");
 
-            var jsonOption = new Option<bool>(
-                name: "--json",
-                description: "Output machine-readable JSON");
+            var listCommand = new Command("list", "Scans local XGP packages");
 
-            var scanCommand = new Command("scan", "Scans local XGP packages")
-            {
-                jsonOption
-            };
-
-            scanCommand.SetHandler(async (json) => await ScanCommandHandler.HandleAsync(json), jsonOption);
+            listCommand.SetHandler(async () => await ListCommandHandler.HandleAsync());
 
             var packageOption = new Option<string>(
                 name: "--package",
@@ -32,32 +25,31 @@ namespace XgpSm.Cli
             var exportCommand = new Command("export", "Export save files into raw PC format (non-Xbox format)")
             {
                 packageOption,
-                xuidOption,
-                jsonOption
+                xuidOption
             };
 
-            exportCommand.SetHandler((package, xuid, json) => ExportCommandHandler.Handle(package, xuid, json), packageOption, xuidOption, jsonOption);
+            exportCommand.SetHandler((package, xuid) => ExportCommandHandler.Handle(package, xuid), packageOption, xuidOption);
 
             var backupCommand = new Command("backup", "Creates a timestamped backup of an Xbox Game Pass WGS save folder")
             {
                 packageOption,
-                xuidOption,
-                jsonOption
+                xuidOption
             };
 
-            backupCommand.SetHandler((package, xuid, json) => BackupCommandHandler.Handle(package, xuid, json), packageOption, xuidOption, jsonOption);
+            backupCommand.SetHandler((package, xuid) => BackupCommandHandler.Handle(package, xuid), packageOption, xuidOption);
 
             var sourceOption = new Option<string>(
                 name: "--source",
                 description: "Source directory containing replacement save files") { IsRequired = true };
 
-            var replaceCommand = new Command("replace", "Inject external save data into an Xbox Game Pass WGS container")
+            var importCommand = new Command("import", "Inject external save data into an Xbox Game Pass WGS container")
             {
                 packageOption,
                 xuidOption,
-                sourceOption,
-                jsonOption
+                sourceOption
             };
+
+            importCommand.SetHandler((package, xuid, source) => ImportCommandHandler.Handle(package, xuid, source), packageOption, xuidOption, sourceOption);
 
             var targetXuidOption = new Option<string>(
                 name: "--target-xuid",
@@ -67,30 +59,28 @@ namespace XgpSm.Cli
                 name: "--source-xuid",
                 description: "Source user XUID to transfer from") { IsRequired = true };
 
-            var transferCommand = new Command("transfer", "Moves full directory structures between Xbox profiles on disk")
+            var migrateCommand = new Command("migrate", "Copy full directory structures between Xbox profiles on disk")
             {
                 packageOption,
                 sourceXuidOption,
-                targetXuidOption,
-                jsonOption
+                targetXuidOption
             };
 
-            transferCommand.SetHandler((package, sourceXuid, targetXuid, json) => TransferCommandHandler.Handle(package, sourceXuid, targetXuid, json), packageOption, sourceXuidOption, targetXuidOption, jsonOption);
+            migrateCommand.SetHandler((package, sourceXuid, targetXuid) => MigrateCommandHandler.Handle(package, sourceXuid, targetXuid), packageOption, sourceXuidOption, targetXuidOption);
 
             var analyzeCommand = new Command("analyze", "Reads the Magic Bytes of the save container to guess its format")
             {
                 packageOption,
-                xuidOption,
-                jsonOption
+                xuidOption
             };
 
-            analyzeCommand.SetHandler((package, xuid, json) => AnalyzeCommandHandler.Handle(package, xuid, json), packageOption, xuidOption, jsonOption);
+            analyzeCommand.SetHandler((package, xuid) => AnalyzeCommandHandler.Handle(package, xuid), packageOption, xuidOption);
 
-            rootCommand.AddCommand(scanCommand);
+            rootCommand.AddCommand(listCommand);
             rootCommand.AddCommand(exportCommand);
             rootCommand.AddCommand(backupCommand);
-            rootCommand.AddCommand(replaceCommand);
-            rootCommand.AddCommand(transferCommand);
+            rootCommand.AddCommand(importCommand);
+            rootCommand.AddCommand(migrateCommand);
             rootCommand.AddCommand(analyzeCommand);
 
             return await rootCommand.InvokeAsync(args);
