@@ -74,7 +74,7 @@ namespace XgpSaveTools
         public string BackupFolder(GameInfo gameInfo, UserContainerFolder userContainer) => CopyDirectory(userContainer.Dir,
             Path.Combine(BackupOutput, DateTime.Now.ToString("yyyy.MM.dd"), gameInfo.Name, userContainer.UserTag));
 
-        public string TransferFolder(GameInfo gameInfo, string sourceXuid, string targetXuid)
+        public string TransferFolder(GameInfo gameInfo, string sourceXuid, string targetXuid, bool dryRun = false)
         {
             var baseDir = OverrideWgsPath ?? Path.Combine(PackagesRoot, gameInfo.Package, "SystemAppData", "wgs");
             var sourceDirs = InnerFindUserContainers(baseDir);
@@ -83,13 +83,15 @@ namespace XgpSaveTools
             if (sourceContainer == null) return string.Empty;
 
             var targetContainer = sourceDirs.FirstOrDefault(c => c.UserTag == targetXuid || c.Dir.Contains(targetXuid));
-            if (targetContainer != null)
+            if (targetContainer != null && !dryRun)
             {
                 BackupFolder(gameInfo, targetContainer);
             }
 
             var targetFolderName = Path.GetFileName(sourceContainer.Dir).Replace(sourceXuid, targetXuid);
             var targetDir = Path.Combine(baseDir, targetFolderName);
+
+            if (dryRun) return targetDir;
 
             return CopyDirectory(sourceContainer.Dir, targetDir);
         }

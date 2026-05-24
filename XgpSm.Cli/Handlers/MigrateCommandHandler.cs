@@ -10,7 +10,7 @@ namespace XgpSm.Cli.Handlers
 {
     public static class MigrateCommandHandler
     {
-        public static void Handle(string package, string sourceXuid, string targetXuid)
+        public static void Handle(string package, string sourceXuid, string targetXuid, bool dryRun = false)
         {
             try
             {
@@ -25,7 +25,7 @@ namespace XgpSm.Cli.Handlers
                 return;
             }
 
-            string resultPath = manager.TransferFolder(targetGame, sourceXuid, targetXuid);
+            string resultPath = manager.TransferFolder(targetGame, sourceXuid, targetXuid, dryRun);
 
             if (string.IsNullOrEmpty(resultPath))
             {

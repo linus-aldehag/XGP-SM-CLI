@@ -45,14 +45,19 @@ namespace XgpSm.Cli
                 name: "--source",
                 description: "Source directory containing replacement save files") { IsRequired = true };
 
+            var dryRunOption = new Option<bool>(
+                name: "--dry-run",
+                description: "Preview changes without modifying any files") { IsRequired = false };
+
             var importCommand = new Command("import", "Inject external save data into an Xbox Game Pass WGS container")
             {
                 packageOption,
                 xuidOption,
-                sourceOption
+                sourceOption,
+                dryRunOption
             };
 
-            importCommand.SetHandler((package, xuid, source) => ImportCommandHandler.Handle(package, xuid, source), packageOption, xuidOption, sourceOption);
+            importCommand.SetHandler((package, xuid, source, dryRun) => ImportCommandHandler.Handle(package, xuid, source, dryRun), packageOption, xuidOption, sourceOption, dryRunOption);
 
             var targetXuidOption = new Option<string>(
                 name: "--target-xuid",
@@ -66,10 +71,11 @@ namespace XgpSm.Cli
             {
                 packageOption,
                 sourceXuidOption,
-                targetXuidOption
+                targetXuidOption,
+                dryRunOption
             };
 
-            migrateCommand.SetHandler((package, sourceXuid, targetXuid) => MigrateCommandHandler.Handle(package, sourceXuid, targetXuid), packageOption, sourceXuidOption, targetXuidOption);
+            migrateCommand.SetHandler((package, sourceXuid, targetXuid, dryRun) => MigrateCommandHandler.Handle(package, sourceXuid, targetXuid, dryRun), packageOption, sourceXuidOption, targetXuidOption, dryRunOption);
 
             var analyzeCommand = new Command("analyze", "Reads the Magic Bytes of the save container to guess its format")
             {
