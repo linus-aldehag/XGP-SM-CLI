@@ -8,11 +8,13 @@ namespace XgpSaveTools.Common
     {
         public static List<GameInfo> ReadGameList()
         {
-            if (!File.Exists(GameListPath)) throw new FileNotFoundException(GameListPath);
-
-            string raw = File.ReadAllText(GameListPath);
+            var assembly = typeof(GameList).Assembly;
+            using var stream = assembly.GetManifestResourceStream("XgpSaveTools.games.json");
+            if (stream == null) throw new FileNotFoundException("games.json not found in embedded resources");
+            using var reader = new StreamReader(stream);
+            string raw = reader.ReadToEnd();
             var wrapper = JsonSerializer.Deserialize(raw, GameListJsonContext.Default.GameInfoJson);
-            return wrapper?.Games ?? throw new Exception($"Failed to read {GameListPath}");
+            return wrapper?.Games ?? throw new Exception("Failed to parse games.json");
         }
 
         public static IEnumerable<GameInfo> DiscoverUserGames(IEnumerable<GameInfo>? supportedGameList = null)

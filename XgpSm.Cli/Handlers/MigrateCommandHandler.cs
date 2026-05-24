@@ -20,7 +20,7 @@ namespace XgpSm.Cli.Handlers
             
             if (targetGame == null)
             {
-                Console.WriteLine(JsonSerializer.Serialize(new ApiResponse<TransferResult> { success = false, error = new ErrorDetail { code = "ERROR", message = "Game package not found" } }, AppJsonContext.Default.ApiResponseTransferResult));
+                Console.WriteLine(JsonSerializer.Serialize(new ApiResponse<TransferResult> { success = false, error = new ErrorDetail { code = "GAME_NOT_FOUND", message = "Game package not found" } }, AppJsonContext.Default.ApiResponseTransferResult));
 
                 return;
             }
@@ -29,16 +29,16 @@ namespace XgpSm.Cli.Handlers
 
             if (string.IsNullOrEmpty(resultPath))
             {
-                Console.WriteLine(JsonSerializer.Serialize(new ApiResponse<TransferResult> { success = false, error = new ErrorDetail { code = "ERROR", message = "Transfer failed or source not found" } }, AppJsonContext.Default.ApiResponseTransferResult));
+                Console.WriteLine(JsonSerializer.Serialize(new ApiResponse<TransferResult> { success = false, error = new ErrorDetail { code = "TRANSFER_FAILED", message = "Transfer failed or source not found" } }, AppJsonContext.Default.ApiResponseTransferResult));
 
                 return;
             }
 
-            Console.WriteLine(JsonSerializer.Serialize(new ApiResponse<TransferResult> { success = true, data = new TransferResult { success = true, targetPath = resultPath } }, AppJsonContext.Default.ApiResponseTransferResult));
+            Console.WriteLine(JsonSerializer.Serialize(new ApiResponse<TransferResult> { success = true, data = new TransferResult { success = true, dryRun = dryRun, targetPath = resultPath } }, AppJsonContext.Default.ApiResponseTransferResult));
             }
             catch (Exception ex)
             {
-                Console.WriteLine(JsonSerializer.Serialize(new ApiResponse<TransferResult> { success = false, error = new ErrorDetail { code = "ERROR", message = ex.Message } }, AppJsonContext.Default.ApiResponseTransferResult));
+                Console.WriteLine(JsonSerializer.Serialize(new ApiResponse<TransferResult> { success = false, error = new ErrorDetail { code = "MIGRATE_FAILED", message = ex.Message } }, AppJsonContext.Default.ApiResponseTransferResult));
 
             }
         }

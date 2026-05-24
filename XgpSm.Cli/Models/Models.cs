@@ -82,13 +82,17 @@ namespace XgpSm.Cli.Models
 
     public class ReplaceResult
     {
+        public bool dryRun { get; set; }
         public int replaced { get; set; }
         public int removed { get; set; }
+        public List<string> wouldReplace { get; set; } = new();
+        public List<string> wouldRemove { get; set; } = new();
     }
 
     public class TransferResult
     {
         public bool success { get; set; }
+        public bool dryRun { get; set; }
         public string targetPath { get; set; } = string.Empty;
     }
 
